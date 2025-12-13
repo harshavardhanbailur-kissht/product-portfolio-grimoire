@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Portfolio | Harsha Vardhan Bailur</title>
+    <meta name="description"
+        content="A strategic journey through digital innovation - Product Portfolio by Harsha Vardhan Bailur">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Ambient particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Magical glow effects -->
+    <div class="ambient-glow"></div>
+
+    <!-- Main Book Container -->
+    <div class="book-scene">
+        <div class="book-container">
+            <!-- Table of Contents Toggle -->
+            <button class="toc-toggle" id="tocToggle" aria-label="Table of Contents">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- Animation Toggle -->
+            <button class="anim-toggle" id="animToggle" aria-label="Toggle Animations" title="Toggle Animations">
+                <span class="anim-icon">✨</span>
+            </button>
+
+            <!-- Table of Contents Sidebar -->
+            <aside class="toc-sidebar" id="tocSidebar">
+                <h2 class="toc-title">Chapters</h2>
+                <nav class="toc-nav">
+                    <a href="#" class="toc-item active" data-page="0">
+                        <span class="toc-number">◆</span>
+                        <span class="toc-text">Cover</span>
+                    </a>
+                    <a href="#" class="toc-item" data-page="1">
+                        <span class="toc-number">I</span>
+                        <span class="toc-text">Axion & Competitors</span>
+                    </a>
+                    <a href="#" class="toc-item" data-page="2">
+                        <span class="toc-number">II</span>
+                        <span class="toc-text">SCAMPER Hypothesis</span>
+                    </a>
+                    <a href="#" class="toc-item" data-page="3">
+                        <span class="toc-number">III</span>
+                        <span class="toc-text">Game Design Portfolio</span>
+                    </a>
+                    <a href="#" class="toc-item" data-page="4">
+                        <span class="toc-number">IV</span>
+                        <span class="toc-text">Community Wisdom</span>
+                    </a>
+                    <a href="#" class="toc-item" data-page="5">
+                        <span class="toc-number">◆</span>
+                        <span class="toc-text">About the Author</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- The Book -->
+            <div class="book" id="book">
+                <!-- Cover Page -->
+                <div class="page cover" data-page="0">
+                    <div class="page-content cover-content">
+                        <div class="cover-ornament top"></div>
+                        <div class="cover-main">
+                            <div class="cover-subtitle">The Chronicles of</div>
+                            <h1 class="cover-title">Product<br>Portfolio</h1>
+                            <div class="cover-divider">
+                                <span class="divider-line"></span>
+                                <span class="divider-icon">✦</span>
+                                <span class="divider-line"></span>
+                            </div>
+                            <p class="cover-tagline">A Strategic Journey Through Digital Innovation</p>
+                            <div class="cover-author">
+                                <span class="author-label">Crafted by</span>
+                                <span class="author-name">Harshavardhan Bailur</span>
+                            </div>
+                        </div>
+                        <div class="cover-ornament bottom"></div>
+                        <div class="cover-instruction">
+                            <span class="pulse-arrow">→</span> Click to begin your journey
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chapter 1: Axion -->
+                <div class="page chapter" data-page="1">
+                    <div class="page-content">
+                        <div class="chapter-header">
+                            <span class="chapter-number">Chapter I</span>
+                            <h2 class="chapter-title">Market Battleground</h2>
+                            <p class="chapter-subtitle">Axion and It's Competitors</p>
+                        </div>
+
+                        <div class="chapter-intro">
+                            <p class="intro-quote">"To win the war, one must first understand the battlefield. Axion
+                                stands amidst giants, carving its path through collective intelligence."</p>
+                        </div>
+
+                        <div class="content-section">
+                            <h3 class="section-title">
+                                <span class="title-icon">⚔️</span>
+                                The Competitive Landscape
+                            </h3>
+                            <div class="insight-box reveal-item">
+                                <p class="insight-text">
+                                    <strong>Product People:</strong> A direct challenge with a similar model but larger
+                                    scale. Value prop: "Collective Intelligence".<br>
+                                    <strong>Toptal:</strong> Competes on "Elite Talent Quality".<br>
+                                    <strong>Catchafire:</strong> Dominates the non-profit volunteering niche.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3 class="section-title">
+                                <span class="title-icon">📜</span>
+                                Strategic Recommendations
+                            </h3>
+                            <ul class="strategy-list">
+                                <li class="strategy-item reveal-item">
+                                    <span class="item-marker">◈</span>
+                                    <strong>Sharpen Positioning:</strong> Eliminate ambiguity and clearly communicate
+                                    commercial value.
+                                </li>
+                                <li class="strategy-item reveal-item">
+                                    <span class="item-marker">◈</span>
+                                    <strong>"Power Couple" Model:</strong> Amplify this unique benefit as a core
+                                    differentiator.
+                                </li>
+                                <li class="strategy-item reveal-item">
+                                    <span class="item-marker">◈</span>
+                                    <strong>Scalability:</strong> Address potential challenges with team size and model.
+                                </li>
+                                <li class="strategy-item reveal-item">
+                                    <span class="item-marker">◈</span>
+                                    <strong>Community Role:</strong> Clarify the value of the associated community.
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="content-section">
+                            <h3 class="section-title">
+                                <span class="title-icon">🪙</span>
+                                The Economics
+                            </h3>
+                            <div class="presentation-showcase">
+                                <div class="presentation-card reveal-item" style="padding: 16px;">
+                                    <div class="pres-content">
+                                        <h4 class="pres-title">Deployment Pricing</h4>
+                                        <ul style="list-style: none; padding: 0; margin-top: 10px;">
+                                            <li style="margin-bottom: 8px;">🔹 <strong>Back Office:</strong> $425/month
+                                            </li>
+                                            <li style="margin-bottom: 8px;">🔹 <strong>Basic Remote PM:</strong>
+                                                $385/week</li>
+                                            <li style="margin-bottom: 8px;">🔹 <strong>PM + Assistant:</strong>
+                                                $2,185/month (20% saving)</li>
+                                            <li>🔹 <strong>Quarterly PM + Assistant:</strong> $6,350/quarter</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="section-text" style="font-size: 0.9rem; margin-top: 10px; font-style: italic;">
+                                Note: Lack of explicit pricing for specialized roles means overall transparency could be
+                                improved.</p>
+                        </div>
+                    </div>
+                    <div class="page-number">1</div>
+                </div>
+
+                <!-- Chapter 2: Scamper -->
+                <div class="page chapter" data-page="2">
+                    <div class="page-content">
+                        <div class="chapter-header">
+                            <span class="chapter-number">Chapter II</span>
+                            <h2 class="chapter-title">The Alchemist's Framework</h2>
+                            <p class="chapter-subtitle">SCAMPER Model Hypothesis</p>
+                        </div>
+
+                        <div class="chapter-intro">
+                            <p class="intro-quote">"Innovation is not always creation; sometimes it is transformation.
+                                Substitute, Combine, Adapt, Modify, Put to use, Eliminate, Rearrange."</p>
+                        </div>
+
+                        <div class="activities-grid">
+                            <div class="activity-card reveal-item">
+                                <div class="activity-header">
+                                    <span class="activity-number">E</span>
+                                    <h4 class="activity-title">Eliminate: Redundancy</h4>
+                                </div>
+                                <p class="activity-insight">
+                                    <strong>Problem:</strong> Three different share icons on the list page cause
+                                    confusion.<br>
+                                    <strong>Solution:</strong> Replace with a single, persistent share button at the
+                                    top. Use a generic connected-dots icon (like Android) or forward arrow (like
+                                    WhatsApp) to eliminate confusion with GPS/Map signals.
+                                </p>
+                            </div>
+
+                            <div class="activity-card reveal-item">
+                                <div class="activity-header">
+                                    <span class="activity-number">C</span>
+                                    <h4 class="activity-title">Combine: Seamless Flow</h4>
+                                </div>
+                                <p class="activity-insight">
+                                    <strong>Hypothesis:</strong> Merge list creation options. Instead of choosing
+                                    between two views, create a seamless process where users can type in a text box OR
+                                    view the map by default.
+                                    <br><br>
+                                    <em>Vision:</em> A future travel planner calculating distances between pins and
+                                    planned places automatically.
+                                </p>
+                            </div>
+
+                            <div class="activity-card reveal-item">
+                                <div class="activity-header">
+                                    <span class="activity-number">M</span>
+                                    <h4 class="activity-title">Modify: Relevance</h4>
+                                </div>
+                                <p class="activity-insight">
+                                    Improve list relevance by modifying the layout to show "Most Viewed" lists at the
+                                    top, or implementing a tagging system. Currently, list allocation feels random.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-number">2</div>
+                </div>
+
+                <!-- Chapter 3: Game Design -->
+                <div class="page chapter" data-page="3">
+                    <div class="page-content">
+                        <div class="chapter-header">
+                            <span class="chapter-number">Chapter III</span>
+                            <h2 class="chapter-title">The Game Architect</h2>
+                            <p class="chapter-subtitle">Game Development Design Portfolio</p>
+                        </div>
+
+                        <div class="chapter-intro">
+                            <p class="intro-quote">"Where mechanics meet narrative, and players find immersion. A
+                                collection of worlds designed and systems deconstructed."</p>
+                        </div>
+
+                        <div class="content-section">
+                            <h3 class="section-title">
+                                <span class="title-icon">🎮</span>
+                                Working Projects
+                            </h3>
+                            <div class="artifacts-grid">
+                                <div class="artifact-card reveal-item">
+                                    <span class="artifact-icon">🔫</span>
+                                    <span class="artifact-name">John Wick Inspired Game</span>
+                                    <span style="font-size: 0.7rem; color: #666; text-align: center;">Mechanics & Story
+                                        Design</span>
+                                </div>
+                                <div class="artifact-card reveal-item">
+                                    <span class="artifact-icon">🚀</span>
+                                    <span class="artifact-name">Nakshatra Yaan</span>
+                                    <span style="font-size: 0.7rem; color: #666; text-align: center;">Mini Game
+                                        Project</span>
+                                </div>
+                                <div class="artifact-card reveal-item">
+                                    <span class="artifact-icon">🃏</span>
+                                    <span class="artifact-name">Strategic Card Game</span>
+                                    <span style="font-size: 0.7rem; color: #666; text-align: center;">System
+                                        Design</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3 class="section-title">
+                                <span class="title-icon">🏃</span>
+                                Endless Runners
+                            </h3>
+                            <div class="presentation-showcase">
+                                <div class="presentation-card reveal-item" style="padding: 16px;">
+                                    <div class="pres-icon">🏙️</div>
+                                    <div class="pres-content">
+                                        <h4 class="pres-title">Rooftop Runner</h4>
+                                        <p class="pres-desc">High-stakes parkour mechanics in an urban environment.</p>
+                                    </div>
+                                </div>
+                                <div class="presentation-card reveal-item" style="padding: 16px;">
+                                    <div class="pres-icon">🌍</div>
+                                    <div class="pres-content">
+                                        <h4 class="pres-title">Open World Runner</h4>
+                                        <p class="pres-desc">Expanding the genre with non-linear exploration elements.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3 class="section-title">
+                                <span class="title-icon">🔍</span>
+                                Game Teardowns
+                            </h3>
+                            <ul class="strategy-list">
+                                <li class="strategy-item reveal-item">
+                                    <span class="item-marker">◈</span>
+                                    <strong>GTA 5:</strong> Open world systems analysis
+                                </li>
+                                <li class="strategy-item reveal-item">
+                                    <span class="item-marker">◈</span>
+                                    <strong>Mobile Legends:</strong> MOBA balance and monetization
+                                </li>
+                                <li class="strategy-item reveal-item">
+                                    <span class="item-marker">◈</span>
+                                    <strong>Business Analytics:</strong> Game economy decomposition
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="page-number">3</div>
+                </div>
+
+                <!-- Chapter 4: Community Wisdom -->
+                <div class="page chapter" data-page="4">
+                    <div class="page-content">
+                        <div class="chapter-header">
+                            <span class="chapter-number">Chapter IV</span>
+                            <h2 class="chapter-title">Community Wisdom</h2>
+                            <p class="chapter-subtitle">Knowledge Shared with Fellow Seekers</p>
+                        </div>
+
+                        <div class="chapter-intro">
+                            <p class="intro-quote">"The greatest gift a strategist can offer is to illuminate the path
+                                for those who follow..."</p>
+                        </div>
+
+                        <div class="wisdom-showcase">
+                            <div class="wisdom-card featured reveal-item">
+                                <div class="wisdom-glow"></div>
+                                <div class="wisdom-header">
+                                    <span class="wisdom-icon">📜</span>
+                                    <h4 class="wisdom-title">The 3 Most Common Mistakes Aspiring PMs Make</h4>
+                                </div>
+                                <div class="wisdom-content">
+                                    <div class="mistake-item">
+                                        <span class="mistake-number">1</span>
+                                        <div class="mistake-text">
+                                            <strong>The Feature Trap</strong>
+                                            <p>Focusing on features rather than the problems they solve</p>
+                                        </div>
+                                    </div>
+                                    <div class="mistake-item">
+                                        <span class="mistake-number">2</span>
+                                        <div class="mistake-text">
+                                            <strong>The Data Delusion</strong>
+                                            <p>Confusing metrics with insights and numbers with stories</p>
+                                        </div>
+                                    </div>
+                                    <div class="mistake-item">
+                                        <span class="mistake-number">3</span>
+                                        <div class="mistake-text">
+                                            <strong>The Stakeholder Silence</strong>
+                                            <p>Building in isolation without continuous feedback loops</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wisdom-footer">
+                                    <span class="community-badge">Product Community Contribution</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-number">4</div>
+                </div>
+
+                <!-- About the Author -->
+                <div class="page chapter" data-page="5">
+                    <div class="page-content about-content">
+                        <div class="about-header">
+                            <div class="author-avatar">
+                                <span class="avatar-initial">H</span>
+                            </div>
+                            <h2 class="about-title">About the Author</h2>
+                        </div>
+
+                        <div class="about-intro reveal-item">
+                            <p>A product strategist navigated by data, driven by user empathy, and inspired by game
+                                mechanics. Unraveling the mysteries of digital products one hypothesis at a time.</p>
+                        </div>
+
+                        <div class="skills-section reveal-item">
+                            <h4 class="skills-title">Arsenal of Skills</h4>
+                            <div class="skills-grid">
+                                <div class="skill-item">Product Strategy</div>
+                                <div class="skill-item">Market Research</div>
+                                <div class="skill-item">Game Design</div>
+                                <div class="skill-item">SCAMPER Framework</div>
+                                <div class="skill-item">Pricing Strategy</div>
+                                <div class="skill-item">User Research</div>
+                            </div>
+                        </div>
+
+                        <div class="connect-section reveal-item">
+                            <h4 class="connect-title">Continue the Journey</h4>
+                            <div class="connect-links">
+                                <a href="https://synonymous-lute-224.notion.site/Product-Portfolio-202567fe093280f4a012eb0b7fe3fd40"
+                                    target="_blank" class="connect-link">
+                                    <span class="link-icon">📓</span>
+                                    <span>Notion Portfolio</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="closing-quote">
+                            <p>"The journey of a thousand products begins with a single insight."</p>
+                        </div>
+                    </div>
+                    <div class="page-number">∞</div>
+                </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button class="nav-arrow prev" id="prevBtn" aria-label="Previous page" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button class="nav-arrow next" id="nextBtn" aria-label="Next page">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+
+            <!-- Page Indicator -->
+            <div class="page-indicator" id="pageIndicator">
+                <span class="current">Cover</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio for page flip (optional) -->
+    <audio id="pageFlipSound" preload="auto">
+        <source
+            src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYakqLBIAAAAAAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYakqLBIAAAAAAAAAAAAAAAAAAAA"
+            type="audio/mp3">
+    </audio>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
