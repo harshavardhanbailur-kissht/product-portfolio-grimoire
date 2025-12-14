@@ -27,29 +27,78 @@ class BookPortfolio {
         this.scrollDebounceTimer = null;
 
         // Page names for indicator
-        this.pageNames = [
-            'Cover',
-            'Chapter I - Axion & Competitors',
-            'Chapter II - SCAMPER Hypothesis',
-            'Chapter III - Game Design',
-            'Chapter IV - Community Wisdom',
-            'About the Author'
-        ];
+        this.pageNames = [];
+        this.initPageNames();
 
         // Initialize
         this.init();
     }
 
+    initPageNames() {
+        this.pages.forEach((page, index) => {
+            if (index === 0) {
+                this.pageNames.push('Cover');
+                return;
+            }
+            // Try to find a title in the page
+            const titleEl = page.querySelector('.chapter-title');
+            if (titleEl) {
+                this.pageNames.push(titleEl.textContent.trim());
+            } else if (page.querySelector('.about-title')) {
+                this.pageNames.push('About the Author');
+            } else {
+                this.pageNames.push(`Chapter ${index}`);
+            }
+        });
+    }
+
     init() {
+        // this.renderPages(); // Disabled: Using static HTML
+        this.reinitializeDOMElements();
         this.bindEvents();
         this.createParticles();
         this.updateNavigation();
         this.initRevealAnimations();
+        this.initModals();
 
         // Initial reveal for cover page
         setTimeout(() => {
             this.revealPageContent(0);
         }, 500);
+    }
+
+    // Legacy dynamic rendering methods (disabled/removed)
+    /*
+    renderPages() { ... }
+    flattenData(nodes) { ... }
+    */
+
+    reinitializeDOMElements() {
+        // Refresh TOC references
+        const tocNav = document.querySelector('.toc-nav');
+        tocNav.innerHTML = ''; // a fresh start
+
+        // Regenerate TOC based on discovered pages
+        this.pageNames.forEach((name, index) => {
+            const link = document.createElement('a');
+            link.href = '#';
+            link.className = `toc-item ${index === 0 ? 'active' : ''}`;
+            link.dataset.page = index;
+
+            let num = index;
+            if (index === 0) num = '◆';
+            else if (index === this.pageNames.length - 1 && name === 'About the Author') num = '∞';
+            else if (index < 5) {
+                // Roman numerals for first few chapters
+                const romans = ['I', 'II', 'III', 'IV'];
+                num = romans[index - 1] || index;
+            }
+
+            link.innerHTML = `<span class="toc-number">${num}</span><span class="toc-text">${name}</span>`;
+            tocNav.appendChild(link);
+        });
+
+        this.tocItems = document.querySelectorAll('.toc-item');
     }
 
     bindEvents() {
@@ -60,9 +109,20 @@ class BookPortfolio {
         // Page click to turn
         this.pages.forEach((page, index) => {
             page.addEventListener('click', (e) => {
-                // Don't flip if clicking on scrollable content area
-                if (e.target.closest('.page-content') &&
-                    e.target.closest('.page-content').scrollHeight > e.target.closest('.page-content').clientHeight) {
+                // Ignore clicks on interactive elements
+                if (e.target.closest('a, button, input, textarea, .resource-card, .artifact-card, .activity-card, .blog-link')) {
+                    return;
+                }
+
+                // Don't flip if clicking on scrollable content area that has scrollable content
+                // AND we are not at the bottom (scrolling down)
+                const content = e.target.closest('.page-content');
+                if (content && content.scrollHeight > content.clientHeight) {
+                    // Allow clicking to turn ONLY if we aren't selecting text or interacting
+                    // Implementation choice: require clicking specifically *outside* text or on margins?
+                    // Simpler: Just don't auto-flip on scrollable pages unless at the very bottom?
+                    // User complained about "buttons moving to next page". The interactive check above fixes that.
+                    // Let's also ensure we don't accidentally flip when trying to scroll.
                     return;
                 }
 
@@ -128,6 +188,49 @@ class BookPortfolio {
         window.addEventListener('wheel', (e) => this.handleScroll(e), { passive: false });
     }
 
+    initModals() {
+        const modalOverlay = document.getElementById('john-wick-modal');
+        const openBtns = document.querySelectorAll('.read-more-btn');
+        const closeBtn = document.querySelector('.close-modal-btn');
+
+        if (!modalOverlay) return;
+
+        // Open modal
+        openBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent page flip
+                const modalId = btn.getAttribute('data-modal');
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'flex';
+                }
+            });
+        });
+
+        // Close functions
+        const closeModal = () => {
+            modalOverlay.style.display = 'none';
+        };
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+
+        // Close on background click
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalOverlay.style.display === 'flex') {
+                closeModal();
+            }
+        });
+    }
+
     handleScroll(e) {
         // Don't flip if scrolling inside a scrollable area that actually has scroll room
         const scrollableContent = e.target.closest('.page-content');
@@ -164,13 +267,21 @@ class BookPortfolio {
         document.body.classList.toggle('no-animations', !this.animationsEnabled);
 
         // Update button visual state
+        // Update button visual state
         if (this.animToggle) {
             const icon = this.animToggle.querySelector('.anim-icon');
+            const label = this.animToggle.querySelector('.anim-label');
+
             if (icon) {
                 icon.textContent = this.animationsEnabled ? '✨' : '🚫';
                 icon.style.filter = this.animationsEnabled ? 'none' : 'grayscale(100%)';
             }
-            this.animToggle.style.opacity = this.animationsEnabled ? '1' : '0.6';
+
+            if (label) {
+                label.textContent = this.animationsEnabled ? 'Animations: ON' : 'Animations: OFF';
+            }
+
+            this.animToggle.style.opacity = this.animationsEnabled ? '1' : '0.8';
         }
 
         if (!this.animationsEnabled) {

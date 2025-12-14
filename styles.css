@@ -53,7 +53,7 @@
 }
 
 html {
-    font-size: 16px;
+    font-size: 18px;
     scroll-behavior: smooth;
 }
 
@@ -297,7 +297,12 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    background: linear-gradient(135deg, var(--parchment-light) 0%, var(--parchment-dark) 100%);
+    left: 0;
+    /* Dark Grimoire Theme */
+    background: linear-gradient(135deg,
+            #1a1a2e 0%,
+            #16213e 100%);
+    border: 1px solid var(--gold-dark);
     border-radius: 4px 16px 16px 4px;
     box-shadow:
         0 2px 10px var(--shadow-medium),
@@ -381,7 +386,8 @@ body {
     height: 100%;
     padding: var(--page-padding);
     overflow-y: auto;
-    color: var(--bg-dark);
+    color: var(--parchment-light);
+    /* Light text for dark bg */
     scrollbar-width: thin;
     scrollbar-color: var(--gold-dark) transparent;
 }
@@ -620,7 +626,8 @@ body {
     font-family: 'Cinzel', serif;
     font-size: clamp(1.8rem, 5vw, 2.5rem);
     font-weight: 600;
-    color: var(--bg-dark);
+    color: var(--gold-primary);
+    /* Gold title */
     margin-bottom: 8px;
 }
 
@@ -638,7 +645,7 @@ body {
     font-size: 1.1rem;
     font-style: italic;
     text-align: center;
-    color: #555;
+    color: var(--text-muted);
     padding: 16px 24px;
     border-left: 3px solid var(--gold-primary);
     background: rgba(212, 175, 55, 0.05);
@@ -668,7 +675,7 @@ body {
 .section-text {
     font-size: 1.05rem;
     line-height: 1.8;
-    color: #333;
+    color: var(--text-light);
 }
 
 /* Strategy List */
@@ -688,7 +695,7 @@ body {
     border-radius: 8px;
     font-size: 1rem;
     line-height: 1.6;
-    color: #333;
+    color: var(--text-light);
     transition: all 0.3s ease;
 }
 
@@ -716,8 +723,10 @@ body {
     align-items: center;
     gap: 8px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid var(--parchment-edge);
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    /* Dark Glass */
+    border: 1px solid var(--gold-dark);
     border-radius: 12px;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -725,18 +734,15 @@ body {
 
 .artifact-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.8);
-}
-
-.artifact-icon {
-    font-size: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--gold-primary);
 }
 
 .artifact-name {
     font-size: 0.85rem;
     text-align: center;
-    color: #444;
+    color: var(--text-light);
     font-weight: 500;
 }
 
@@ -755,8 +761,8 @@ body {
     display: flex;
     gap: 20px;
     padding: 24px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 100%);
-    border: 1px solid var(--parchment-edge);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid var(--gold-dark);
     border-radius: 16px;
     transition: all 0.4s ease;
 }
@@ -779,7 +785,7 @@ body {
     font-family: 'Cinzel', serif;
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--bg-dark);
+    color: var(--gold-primary);
     margin-bottom: 8px;
 }
 
@@ -824,7 +830,7 @@ body {
 .insight-text {
     font-size: 0.95rem;
     line-height: 1.7;
-    color: #333;
+    color: var(--text-light);
     font-style: italic;
 }
 
@@ -840,23 +846,169 @@ body {
 
 .activity-card {
     padding: 20px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.4) 100%);
-    border: 1px solid var(--parchment-edge);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid var(--gold-dark);
     border-radius: 16px;
     transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
 }
 
-.activity-card::before {
-    content: '';
-    position: absolute;
+
+/* ===================================
+   DETAILED CONTENT MODAL
+   =================================== */
+
+.read-more-btn {
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 100%);
+    color: var(--bg-dark);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.read-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px var(--glow-gold);
+}
+
+.modal-overlay {
+    position: fixed;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 100%;
     height: 100%;
-    background: var(--gold-primary);
-    transition: width 0.3s ease;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    animation: fadeIn 0.4s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #f5e6c8 0%, #e8d5a3 100%);
+    /* Parchment */
+    color: var(--bg-dark);
+    padding: 40px;
+    border-radius: 12px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.8),
+        inset 0 0 40px rgba(212, 175, 55, 0.2);
+    border: 1px solid var(--gold-dark);
+    transform: scale(0.9);
+    animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes scaleIn {
+    to {
+        transform: scale(1);
+    }
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-modal-btn:hover {
+    background: var(--bg-dark);
+    color: var(--gold-primary);
+    transform: rotate(90deg);
+}
+
+.modal-header {
+    border-bottom: 2px solid var(--gold-dark);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.modal-header h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: var(--bg-dark);
+    margin-bottom: 4px;
+}
+
+.modal-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.modal-body p {
+    margin-bottom: 16px;
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+.modal-body ul {
+    margin-bottom: 24px;
+    padding-left: 24px;
+}
+
+.modal-body li {
+    margin-bottom: 8px;
+}
+
+.mechanics-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 16px 0 24px;
+}
+
+.mech-item {
+    background: var(--bg-dark);
+    color: var(--gold-primary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid var(--gold-dark);
+}
+
+.design-note {
+    background: rgba(212, 175, 55, 0.1);
+    border-left: 4px solid var(--gold-dark);
+    padding: 16px;
+    font-style: italic;
+    color: var(--text-light);
+    border-radius: 0 8px 8px 0;
 }
 
 .activity-card:hover {
@@ -886,7 +1038,7 @@ body {
     font-family: 'Cinzel', serif;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--bg-dark);
+    color: var(--text-light);
 }
 
 .activity-players {
@@ -898,12 +1050,12 @@ body {
 }
 
 .player {
-    padding: 4px 10px;
-    background: rgba(26, 26, 46, 0.1);
+    background: rgba(26, 26, 46, 0.5);
+    border: 1px solid var(--gold-dark);
     border-radius: 6px;
     font-size: 0.8rem;
     font-weight: 500;
-    color: #333;
+    color: var(--text-light);
 }
 
 .player.highlight {
@@ -920,7 +1072,7 @@ body {
 .activity-insight {
     font-size: 0.9rem;
     font-style: italic;
-    color: #555;
+    color: var(--text-light);
     border-top: 1px dashed var(--parchment-edge);
     padding-top: 12px;
 }
@@ -1057,10 +1209,11 @@ body {
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--gold-dark);
     border-radius: 20px;
     font-size: 0.85rem;
-    color: #444;
+    color: var(--text-light);
 }
 
 .stat-icon {
@@ -1115,7 +1268,7 @@ body {
 .about-intro p {
     font-size: 1.1rem;
     line-height: 1.8;
-    color: #444;
+    color: var(--text-light);
     font-style: italic;
 }
 
@@ -1142,10 +1295,8 @@ body {
 .skill-item {
     padding: 8px 16px;
     background: rgba(212, 175, 55, 0.15);
-    border: 1px solid var(--gold-dark);
-    border-radius: 20px;
-    font-size: 0.85rem;
-    color: #333;
+    color: var(--text-light);
+    border: 1px solid var(--gold-primary);
     transition: all 0.3s ease;
 }
 
@@ -1447,6 +1598,7 @@ body {
         page-break-after: always;
     }
 }
+
 /* ===================================
    ANIMATION CONTROLS
    =================================== */
@@ -1521,7 +1673,8 @@ body.no-animations .ambient-glow {
     .book {
         width: 100%;
         height: auto;
-        transform: none !important; /* Disable 3D rotation */
+        transform: none !important;
+        /* Disable 3D rotation */
         display: flex;
         flex-direction: column;
         gap: 32px;
@@ -1532,7 +1685,8 @@ body.no-animations .ambient-glow {
         width: 100%;
         height: auto;
         min-height: 600px;
-        transform: none !important; /* Force flat layout */
+        transform: none !important;
+        /* Force flat layout */
         opacity: 1 !important;
         z-index: 1 !important;
         visibility: visible !important;
@@ -1542,7 +1696,7 @@ body.no-animations .ambient-glow {
         /* Card style for mobile */
         background: linear-gradient(135deg, var(--parchment-light) 0%, var(--parchment-dark) 100%);
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .page.flipped {
@@ -1560,16 +1714,18 @@ body.no-animations .ambient-glow {
     .page-content {
         padding: 24px 16px;
         height: auto;
-        overflow: visible; /* Let natural document scroll handle it */
+        overflow: visible;
+        /* Let natural document scroll handle it */
     }
 
     /* Cover adjustments */
     .cover-title {
         font-size: 3rem;
     }
-    
+
     .cover-instruction {
-        display: none; /* Tap/scroll is intuitive */
+        display: none;
+        /* Tap/scroll is intuitive */
     }
 
     /* Ensure TOC works */
@@ -1582,4 +1738,136 @@ body.no-animations .ambient-glow {
         top: 16px;
         right: 16px;
     }
+
+    /* ===================================
+   ENHANCED ANIMATION TOGGLE
+   =================================== */
+
+    .anim-toggle {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        background: rgba(26, 26, 46, 0.9);
+        border: 1px solid var(--gold-primary);
+        border-radius: 30px;
+        /* Pill shape */
+        color: var(--gold-primary);
+        padding: 8px 16px;
+        /* Space for text */
+        cursor: pointer;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .anim-toggle:hover {
+        background: var(--gold-primary);
+        color: var(--bg-dark);
+        transform: translateY(2px);
+        box-shadow: 0 4px 15px var(--glow-gold);
+    }
+
+    .anim-label {
+        font-family: 'Cinzel', serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    @media (max-width: 480px) {
+        .anim-label {
+            display: none;
+        }
+
+        .anim-toggle {
+            padding: 8px;
+            width: 40px;
+            height: 40px;
+            justify-content: center;
+        }
+    }
+}
+
+/* ===================================
+   CONTRAST & READABILITY OVERRIDES
+   Final Polish to ensure accessibility
+   =================================== */
+
+/* Force all headings inside the dark pages to be Gold */
+.page-content h1,
+.page-content h2,
+.page-content h3,
+.page-content h4,
+.page-content h5,
+.page-content h6,
+.chapter-title,
+.section-title,
+.activity-title,
+.pres-title {
+    color: var(--gold-primary) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Force all subtitles to be Light Parchment */
+.chapter-subtitle,
+.section-subtitle,
+.artifact-subtitle,
+.page-content h2+p,
+.page-content h3+p {
+    color: var(--text-light) !important;
+    font-weight: 500;
+    opacity: 0.95;
+    font-size: 1.1rem;
+    /* Slightly boost size */
+}
+
+/* Force insight text to be clearly visible */
+.insight-text,
+.insight-text strong,
+.activity-insight,
+.activity-insight strong {
+    color: var(--text-light) !important;
+    font-weight: 500;
+}
+
+/* Ensure body text is readable */
+.page-content p,
+.page-content li,
+.page-content ul,
+.page-content dl,
+.page-content dt,
+.page-content dd {
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+/* Fix specific low-contrast areas identified in screenshots */
+.player,
+.skill-item,
+.mech-item {
+    color: var(--text-light) !important;
+    border-color: var(--gold-primary) !important;
+    background: rgba(26, 26, 46, 0.6) !important;
+}
+
+/* Ensure tags (Gold bg) keep dark text */
+.tag {
+    color: var(--bg-dark) !important;
+    font-weight: 700;
+}
+
+/* Presentation/Pricing Card - Enforce Dark Theme */
+.presentation-card {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid var(--gold-dark) !important;
+    border-radius: 12px;
+}
+
+.pres-content li,
+.pres-content strong {
+    color: var(--text-light) !important;
 }

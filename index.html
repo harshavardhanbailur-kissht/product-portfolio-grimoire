@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Portfolio | Harsha Vardhan Bailur</title>
+    <title>Product Portfolio | Harshavardhan Bailur</title>
     <meta name="description"
-        content="A strategic journey through digital innovation - Product Portfolio by Harsha Vardhan Bailur">
+        content="A strategic journey through digital innovation - Product Portfolio by Harshavardhan Bailur">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -35,8 +35,10 @@
             </button>
 
             <!-- Animation Toggle -->
-            <button class="anim-toggle" id="animToggle" aria-label="Toggle Animations" title="Toggle Animations">
+            <button class="anim-toggle" id="animToggle" aria-label="Toggle Animations"
+                title="Turn off animations if its bothering you and it will make it easier to turn pages through and through faster">
                 <span class="anim-icon">✨</span>
+                <span class="anim-label">Animations: ON</span>
             </button>
 
             <!-- Table of Contents Sidebar -->
@@ -121,7 +123,7 @@
                                     <strong>Product People:</strong> A direct challenge with a similar model but larger
                                     scale. Value prop: "Collective Intelligence".<br>
                                     <strong>Toptal:</strong> Competes on "Elite Talent Quality".<br>
-                                    <strong>Catchafire:</strong> Dominates the non-profit volunteering niche.
+                                    <strong>Catchafire:</strong> Dominates the distinct non-profit volunteering niche.
                                 </p>
                             </div>
                         </div>
@@ -266,6 +268,7 @@
                                     <span class="artifact-name">John Wick Inspired Game</span>
                                     <span style="font-size: 0.7rem; color: #666; text-align: center;">Mechanics & Story
                                         Design</span>
+                                    <button class="read-more-btn" data-modal="john-wick-modal">Read More</button>
                                 </div>
                                 <div class="artifact-card reveal-item">
                                     <span class="artifact-icon">🚀</span>
@@ -454,6 +457,43 @@
             src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYakqLBIAAAAAAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYakqLBIAAAAAAAAAAAAAAAAAAAA"
             type="audio/mp3">
     </audio>
+
+    <!-- Detailed Content Modals -->
+    <div id="john-wick-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <button class="close-modal-btn" data-modal="john-wick-modal">×</button>
+            <div class="modal-header">
+                <h3>John Wick: Game Mechanics</h3>
+                <span class="modal-subtitle">A Deep Dive into Gameplay Design</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Player Centered Map:</strong> Extra assets, materials, and opponents aren’t visible. But as
+                    John moves, the screen also moves with him while he will always stay in center but everything around
+                    him will keep moving.</p>
+
+                <p><strong>Vision System:</strong> Unlike typical shooter games, vision is strictly limited to the
+                    character's perspective.</p>
+                <ul>
+                    <li>Snipers always have to be outside cone of vision when spawning.</li>
+                    <li>Mounted machine guns have to be just outside the edge of the screen and can shoot John without
+                        him seeing them.</li>
+                </ul>
+
+                <h4>Current 3 GOD TIER MECHANICS</h4>
+                <p>To be made, adjusted, and perfected and experimented with:</p>
+                <div class="mechanics-list">
+                    <span class="mech-item">💥 Grenade Launcher</span>
+                    <span class="mech-item">☠️ Toxic Smoke</span>
+                    <span class="mech-item">⚔️ Katana</span>
+                </div>
+
+                <p class="design-note">"Purpose of above 3 equipment’s is that they show very late into the game. All
+                    the impossible rounds that John faces almost about to die without these equipment’s — it will be
+                    made possible with these equipment’s. Not easy, but possible. Without them, it has to be
+                    impossible."</p>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
