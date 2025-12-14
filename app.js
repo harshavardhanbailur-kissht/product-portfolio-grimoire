@@ -264,25 +264,19 @@ class BookPortfolio {
 
     toggleAnimations() {
         this.animationsEnabled = !this.animationsEnabled;
-        document.body.classList.toggle('no-animations', !this.animationsEnabled);
 
-        // Update button visual state
-        // Update button visual state
-        if (this.animToggle) {
-            const icon = this.animToggle.querySelector('.anim-icon');
-            const label = this.animToggle.querySelector('.anim-label');
-
-            if (icon) {
-                icon.textContent = this.animationsEnabled ? '✨' : '🚫';
-                icon.style.filter = this.animationsEnabled ? 'none' : 'grayscale(100%)';
-            }
-
-            if (label) {
-                label.textContent = this.animationsEnabled ? 'Animations: ON' : 'Animations: OFF';
-            }
-
-            this.animToggle.style.opacity = this.animationsEnabled ? '1' : '0.8';
+        if (this.animationsEnabled) {
+            document.body.classList.remove('no-animations');
+            if (this.animToggle) this.animToggle.classList.add('active');
+            this.initParticles();
+        } else {
+            document.body.classList.add('no-animations');
+            if (this.animToggle) this.animToggle.classList.remove('active');
+            // We don't remove particles DOM to avoid complexity, CSS hides them
         }
+
+        // Save preference
+        localStorage.setItem('portfolio_animations', this.animationsEnabled);
 
         if (!this.animationsEnabled) {
             // Stop particles/glow
