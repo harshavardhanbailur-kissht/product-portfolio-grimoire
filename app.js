@@ -57,6 +57,7 @@ class BookPortfolio {
         this.reinitializeDOMElements();
         this.bindEvents();
         this.createParticles();
+        this.restoreAnimationPreference();
         this.updateNavigation();
         this.initRevealAnimations();
         this.initModals();
@@ -88,9 +89,9 @@ class BookPortfolio {
             let num = index;
             if (index === 0) num = '◆';
             else if (index === this.pageNames.length - 1 && name === 'About the Author') num = '∞';
-            else if (index < 5) {
-                // Roman numerals for first few chapters
-                const romans = ['I', 'II', 'III', 'IV'];
+            else {
+                // Roman numerals for chapters
+                const romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
                 num = romans[index - 1] || index;
             }
 
@@ -264,29 +265,32 @@ class BookPortfolio {
 
     toggleAnimations() {
         this.animationsEnabled = !this.animationsEnabled;
+        this.applyAnimationState();
+        // Save preference
+        localStorage.setItem('portfolio_animations', this.animationsEnabled ? 'true' : 'false');
+    }
 
+    applyAnimationState() {
         if (this.animationsEnabled) {
             document.body.classList.remove('no-animations');
             if (this.animToggle) this.animToggle.classList.add('active');
-            this.initParticles();
-        } else {
-            document.body.classList.add('no-animations');
-            if (this.animToggle) this.animToggle.classList.remove('active');
-            // We don't remove particles DOM to avoid complexity, CSS hides them
-        }
-
-        // Save preference
-        localStorage.setItem('portfolio_animations', this.animationsEnabled);
-
-        if (!this.animationsEnabled) {
-            // Stop particles/glow
-            if (this.particlesContainer) this.particlesContainer.style.display = 'none';
-            const glow = document.querySelector('.ambient-glow');
-            if (glow) glow.style.display = 'none';
-        } else {
             if (this.particlesContainer) this.particlesContainer.style.display = '';
             const glow = document.querySelector('.ambient-glow');
             if (glow) glow.style.display = '';
+        } else {
+            document.body.classList.add('no-animations');
+            if (this.animToggle) this.animToggle.classList.remove('active');
+            if (this.particlesContainer) this.particlesContainer.style.display = 'none';
+            const glow = document.querySelector('.ambient-glow');
+            if (glow) glow.style.display = 'none';
+        }
+    }
+
+    restoreAnimationPreference() {
+        const saved = localStorage.getItem('portfolio_animations');
+        if (saved !== null) {
+            this.animationsEnabled = saved === 'true';
+            this.applyAnimationState();
         }
     }
 

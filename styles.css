@@ -297,7 +297,6 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    left: 0;
     /* Dark Grimoire Theme */
     background: linear-gradient(135deg,
             #1a1a2e 0%,
@@ -377,6 +376,14 @@ body {
 
 .page[data-page="5"] {
     z-index: 10;
+}
+
+.page[data-page="6"] {
+    z-index: 9;
+}
+
+.page[data-page="7"] {
+    z-index: 8;
 }
 
 /* Page Content */
@@ -664,7 +671,7 @@ body {
     font-family: 'Cinzel', serif;
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--bg-dark);
+    color: var(--gold-primary);
     margin-bottom: 12px;
 }
 
@@ -722,7 +729,6 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 16px;
     padding: 16px;
     background: rgba(255, 255, 255, 0.05);
     /* Dark Glass */
@@ -792,7 +798,7 @@ body {
 .pres-desc {
     font-size: 0.95rem;
     line-height: 1.7;
-    color: #444;
+    color: var(--text-light);
     margin-bottom: 12px;
 }
 
@@ -1003,11 +1009,11 @@ body {
 }
 
 .design-note {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(212, 175, 55, 0.15);
     border-left: 4px solid var(--gold-dark);
     padding: 16px;
     font-style: italic;
-    color: var(--text-light);
+    color: var(--bg-dark);
     border-radius: 0 8px 8px 0;
 }
 
@@ -1257,7 +1263,7 @@ body {
 .about-title {
     font-family: 'Cinzel', serif;
     font-size: 1.8rem;
-    color: var(--bg-dark);
+    color: var(--gold-primary);
 }
 
 .about-intro {
@@ -1897,6 +1903,7 @@ body.no-animations .ambient-glow {
     opacity: 1 !important;
     font-weight: 500;
 }
+
 /* ===================================
    ARCANE ANIMATION SWITCH (GLOBAL OVERRIDE)
    =================================== */
@@ -1916,7 +1923,7 @@ body.no-animations .ambient-glow {
     border-radius: 50px !important;
     cursor: pointer !important;
     z-index: 9999 !important;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.6) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6) !important;
     transition: all 0.3s ease !important;
 }
 
@@ -1945,7 +1952,7 @@ body.no-animations .ambient-glow {
     position: relative;
     border: 1px solid #444;
     transition: all 0.3s ease;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Knob */
@@ -1958,7 +1965,7 @@ body.no-animations .ambient-glow {
     top: 2px;
     left: 3px;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Active State */
@@ -1973,47 +1980,53 @@ body.no-animations .ambient-glow {
     box-shadow: 0 0 10px var(--gold-primary), 0 0 20px var(--gold-dark);
 }
 
-/* Mobile Prototype Styles */
+/* Real Mobile Phone Emulation */
 .mobile-prototype-container {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     flex-wrap: wrap;
-    gap: 48px;
-    padding: 48px;
-    background: rgba(0,0,0,0.4);
-    border-radius: 24px;
-    border: 1px solid var(--gold-dark);
-    margin: 32px 0;
-    box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+    gap: 100px;
+    /* Generous space between phones */
+    padding: 0;
+    margin: 60px 0 100px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 .mobile-frame-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
 }
 
 .mobile-frame {
-    width: 375px;
-    height: 750px;
-    border: 14px solid #1a1a1a;
+    width: 390px;
+    /* iPhone Pro Max Width */
+    height: 850px;
+    /* Taller Viewport */
+    border: 12px solid #151515;
     border-radius: 40px;
+    /* Slightly tighter corners */
     background: #000;
     position: relative;
-    overflow: hidden;
-    box-shadow: 
+    box-shadow:
         0 0 0 2px #333,
-        0 30px 60px rgba(0,0,0,0.7);
-    transition: transform 0.3s ease;
+        0 20px 60px rgba(0, 0, 0, 0.7);
+    /* Deep Elevation */
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1;
 }
 
+/* Notch Removed for visibility */
+
 .mobile-frame:hover {
-    transform: translateY(-8px);
-    box-shadow: 
+    transform: translateY(-12px);
+    box-shadow:
         0 0 0 2px var(--gold-dark),
-        0 40px 80px rgba(0,0,0,0.8);
+        0 40px 90px rgba(0, 0, 0, 0.8);
 }
 
 .mobile-frame iframe {
@@ -2021,28 +2034,109 @@ body.no-animations .ambient-glow {
     height: 100%;
     border: none;
     background: #fff;
+    border-radius: 28px;
+    /* Reduced radius to show more corner content */
     display: block;
+    /* Prevent iframe from blocking page scroll on mobile touches if needed,
+       but we want interaction. User must scroll outside phone. */
 }
 
 .prototype-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
+    gap: 10px;
+    padding: 12px 28px;
     border: 1px solid var(--gold-dark);
     border-radius: 30px;
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
     text-transform: uppercase;
+    font-family: 'Cinzel', serif;
     transition: all 0.3s ease;
-    background: rgba(0,0,0,0.3);
+    background: rgba(10, 10, 15, 0.8);
+    backdrop-filter: blur(4px);
 }
 
 .prototype-link:hover {
     background: var(--gold-primary);
     color: var(--bg-dark);
     border-color: var(--gold-primary);
-    box-shadow: 0 0 20px var(--glow-gold);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    transform: translateY(-2px);
+}
+/* Browser/Laptop Frame for Desktop Apps */
+.browser-frame-container {
+    display: flex;
+    justify-content: center;
+    margin: 60px 0;
+    perspective: 1000px;
+}
+
+.browser-frame {
+    width: 100%;
+    max-width: 1000px;
+    height: 650px;
+    background: #151515;
+    border-radius: 12px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+}
+
+.browser-header {
+    height: 40px;
+    background: #252525;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+    border-bottom: 1px solid #333;
+    flex-shrink: 0;
+}
+
+.browser-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.browser-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+
+.browser-address {
+    flex: 1;
+    margin-left: 20px;
+    background: #151515;
+    height: 24px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-family: monospace;
+}
+
+.browser-content {
+    flex: 1;
+    background: #fff;
+    position: relative;
+}
+
+.browser-content iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
 }
