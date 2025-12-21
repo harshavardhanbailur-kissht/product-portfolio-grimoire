@@ -291,32 +291,70 @@ class BookPortfolio {
     }
 
     handleScroll(e) {
-        // Don't flip if scrolling inside a scrollable area that actually has scroll room
-        const scrollableContent = e.target.closest('.page-content');
-        if (scrollableContent) {
-            const isScrollable = scrollableContent.scrollHeight > scrollableContent.clientHeight;
-            // If scrolling down and not at bottom, or scrolling up and not at top, let native scroll happen
-            if (isScrollable) {
-                const atBottom = Math.abs(scrollableContent.scrollHeight - scrollableContent.clientHeight - scrollableContent.scrollTop) < 2;
-                const atTop = scrollableContent.scrollTop <= 0;
+        // Get the current page element
+        const currentPageEl = this.pages[this.currentPage];
+        if (!currentPageEl) return;
 
-                if ((e.deltaY > 0 && !atBottom) || (e.deltaY < 0 && !atTop)) {
+        // Find the scrollable content area within the current page
+        const scrollableContent = currentPageEl.querySelector('.page-content');
+
+        if (scrollableContent) {
+            const isScrollable = scrollableContent.scrollHeight > scrollableContent.clientHeight + 5;
+
+            if (isScrollable) {
+                // Calculate scroll positions with a generous buffer
+                const scrollTop = scrollableContent.scrollTop;
+                const scrollHeight = scrollableContent.scrollHeight;
+                const clientHeight = scrollableContent.clientHeight;
+                const buffer = 20; // Generous buffer zone
+
+                const atTop = scrollTop <= buffer;
+                const atBottom = scrollTop + clientHeight >= scrollHeight - buffer;
+
+                // If scrolling down and NOT at the very bottom, let native scroll happen
+                if (e.deltaY > 0 && !atBottom) {
+                    return; // Allow native scroll
+                }
+
+                // If scrolling up and NOT at the very top, let native scroll happen
+                if (e.deltaY < 0 && !atTop) {
+                    return; // Allow native scroll
+                }
+
+                // Even at boundary, require a more deliberate scroll action
+                // and an additional scroll after reaching the boundary
+                if (!this.atBoundary) {
+                    this.atBoundary = true;
+                    this.boundaryScrollCount = 0;
+                    return; // First scroll at boundary - just mark it
+                }
+
+                this.boundaryScrollCount++;
+
+                // Require 2 additional scrolls at the boundary before flipping
+                if (this.boundaryScrollCount < 2) {
                     return;
                 }
             }
         }
 
+        // Prevent default only when we're going to flip
         e.preventDefault();
+
+        // Reset boundary tracking
+        this.atBoundary = false;
+        this.boundaryScrollCount = 0;
 
         if (this.scrollDebounceTimer) return;
 
         this.scrollDebounceTimer = setTimeout(() => {
             this.scrollDebounceTimer = null;
-        }, 300); // 300ms debounce
+        }, 500); // Increased debounce to 500ms
 
-        if (e.deltaY > 50) {
+        // Require larger scroll delta to trigger page flip
+        if (e.deltaY > 30) {
             this.nextPage();
-        } else if (e.deltaY < -50) {
+        } else if (e.deltaY < -30) {
             this.prevPage();
         }
     }
