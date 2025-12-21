@@ -7,12 +7,51 @@
     <title>Product Portfolio | Harshavardhan Bailur</title>
     <meta name="description"
         content="A strategic journey through digital innovation - Product Portfolio by Harshavardhan Bailur">
+
+    <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Critical CSS to prevent FOUC and landing page glitches -->
+    <style>
+        /* Critical styles for immediate render */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0a0a0f;
+            overflow: hidden;
+        }
+
+        /* Hide reveal items until JS loads */
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Prevent layout shift from book */
+        .book,
+        .book-scene {
+            position: relative;
+            visibility: visible;
+        }
+
+        /* Ensure particles don't interfere */
+        .particles,
+        .ambient-glow {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+
+    <!-- Load fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+
+    <!-- Main stylesheet with cache busting -->
+    <link rel="stylesheet" href="styles.css?v=20251221">
 </head>
 
 <body>
@@ -918,7 +957,7 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=20251221"></script>
 </body>
 
 </html>

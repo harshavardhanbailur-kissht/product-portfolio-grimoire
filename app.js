@@ -63,15 +63,17 @@ class BookPortfolio {
         this.initModals();
         this.initFeedback();
 
-        // Mark body as loaded immediately for CSS transitions
-        document.body.classList.add('loaded');
-
-        // Force initial reveal for cover page with proper timing
-        // Use requestAnimationFrame to ensure DOM is painted first
+        // Mark body as loaded after a brief delay for fonts to settle
         requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                this.revealPageContent(0);
-            });
+            document.body.classList.add('loaded');
+
+            // Force initial reveal for cover page with proper timing
+            // Use a small delay to ensure fonts and styles are fully applied
+            setTimeout(() => {
+                requestAnimationFrame(() => {
+                    this.revealPageContent(0);
+                });
+            }, 100);
         });
     }
 
