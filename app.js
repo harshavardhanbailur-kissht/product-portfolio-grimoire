@@ -291,72 +291,18 @@ class BookPortfolio {
     }
 
     handleScroll(e) {
-        // Get the current page element
-        const currentPageEl = this.pages[this.currentPage];
-        if (!currentPageEl) return;
+        // Completely disabled scroll-based page navigation as per user request.
+        // We now rely solely on explicit navigation buttons.
 
-        // Find the scrollable content area within the current page
-        const scrollableContent = currentPageEl.querySelector('.page-content');
-
+        // We still need to allow native scrolling for content
+        const scrollableContent = e.target.closest('.page-content');
         if (scrollableContent) {
-            const isScrollable = scrollableContent.scrollHeight > scrollableContent.clientHeight + 5;
-
-            if (isScrollable) {
-                // Calculate scroll positions with a generous buffer
-                const scrollTop = scrollableContent.scrollTop;
-                const scrollHeight = scrollableContent.scrollHeight;
-                const clientHeight = scrollableContent.clientHeight;
-                const buffer = 20; // Generous buffer zone
-
-                const atTop = scrollTop <= buffer;
-                const atBottom = scrollTop + clientHeight >= scrollHeight - buffer;
-
-                // If scrolling down and NOT at the very bottom, let native scroll happen
-                if (e.deltaY > 0 && !atBottom) {
-                    return; // Allow native scroll
-                }
-
-                // If scrolling up and NOT at the very top, let native scroll happen
-                if (e.deltaY < 0 && !atTop) {
-                    return; // Allow native scroll
-                }
-
-                // Even at boundary, require a more deliberate scroll action
-                // and an additional scroll after reaching the boundary
-                if (!this.atBoundary) {
-                    this.atBoundary = true;
-                    this.boundaryScrollCount = 0;
-                    return; // First scroll at boundary - just mark it
-                }
-
-                this.boundaryScrollCount++;
-
-                // Require 2 additional scrolls at the boundary before flipping
-                if (this.boundaryScrollCount < 2) {
-                    return;
-                }
-            }
+            // Let the browser handle the scrolling naturally
+            return;
         }
 
-        // Prevent default only when we're going to flip
-        e.preventDefault();
-
-        // Reset boundary tracking
-        this.atBoundary = false;
-        this.boundaryScrollCount = 0;
-
-        if (this.scrollDebounceTimer) return;
-
-        this.scrollDebounceTimer = setTimeout(() => {
-            this.scrollDebounceTimer = null;
-        }, 500); // Increased debounce to 500ms
-
-        // Require larger scroll delta to trigger page flip
-        if (e.deltaY > 30) {
-            this.nextPage();
-        } else if (e.deltaY < -30) {
-            this.prevPage();
-        }
+        // If not in a scrollable area, we ignore the wheel event to prevent 
+        // unwanted browser behaviors if any, but we DO NOT flip pages.
     }
 
     toggleAnimations() {
