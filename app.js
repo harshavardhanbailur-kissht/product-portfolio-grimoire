@@ -54,18 +54,74 @@ class BookPortfolio {
 
     init() {
         // this.renderPages(); // Disabled: Using static HTML
-        this.reinitializeDOMElements();
+        // this.reinitializeDOMElements(); // Disabled: Preserving static HTML structure
         this.bindEvents();
         this.createParticles();
         this.restoreAnimationPreference();
         this.updateNavigation();
         this.initRevealAnimations();
         this.initModals();
+        this.initFeedback();
 
-        // Initial reveal for cover page
-        setTimeout(() => {
-            this.revealPageContent(0);
-        }, 500);
+        // Mark body as loaded immediately for CSS transitions
+        document.body.classList.add('loaded');
+
+        // Force initial reveal for cover page with proper timing
+        // Use requestAnimationFrame to ensure DOM is painted first
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                this.revealPageContent(0);
+            });
+        });
+    }
+
+    initFeedback() {
+        const orb = document.getElementById('feedbackOrb');
+        const modal = document.getElementById('feedbackModal');
+        const closeBtn = document.getElementById('closeFeedback');
+        const sendBtn = document.getElementById('sendFeedback');
+
+        if (orb && modal) {
+            orb.addEventListener('click', () => {
+                modal.classList.add('open');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('open');
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('open');
+                }
+            });
+
+            if (sendBtn) {
+                sendBtn.addEventListener('click', () => {
+                    this.sendFeedback();
+                });
+            }
+        }
+    }
+
+    sendFeedback() {
+        const type = document.getElementById('feedbackType').value;
+        const msg = document.getElementById('feedbackMsg').value;
+
+        if (!msg.trim()) {
+            alert("Please enter a message before sending.");
+            return;
+        }
+
+        const subject = `Portfolio Feedback: ${type}`;
+        const body = `Category: ${type}\n\nMessage:\n${msg}`;
+        const mailtoLink = `mailto:harshavardhanbailur@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        window.location.href = mailtoLink;
+
+        // Close modal after sending
+        document.getElementById('feedbackModal').classList.remove('open');
+        document.getElementById('feedbackMsg').value = '';
     }
 
     // Legacy dynamic rendering methods (disabled/removed)
@@ -290,8 +346,9 @@ class BookPortfolio {
         const saved = localStorage.getItem('portfolio_animations');
         if (saved !== null) {
             this.animationsEnabled = saved === 'true';
-            this.applyAnimationState();
         }
+        // Always apply the state on load to ensure UI is in sync
+        this.applyAnimationState();
     }
 
     handleSwipe(startX, endX) {
@@ -417,7 +474,7 @@ class BookPortfolio {
     // ===================================
 
     initRevealAnimations() {
-        // Set up Intersection Observer for reveal animations
+        // Set up Intersection Observer for reveal animations on non-cover pages
         const observerOptions = {
             root: null,
             rootMargin: '0px',
@@ -432,22 +489,32 @@ class BookPortfolio {
             });
         }, observerOptions);
 
-        // Observe all reveal items
-        document.querySelectorAll('.reveal-item').forEach(item => {
+        // Only observe reveal items on pages other than cover (page 0)
+        // Cover page is handled manually in init()
+        document.querySelectorAll('.page:not([data-page="0"]) .reveal-item').forEach(item => {
             this.revealObserver.observe(item);
         });
     }
 
     revealPageContent(pageIndex) {
         const page = this.pages[pageIndex];
+        if (!page) return;
+
         const revealItems = page.querySelectorAll('.reveal-item');
 
-        // Reset and re-trigger reveal animations
-        revealItems.forEach((item, i) => {
+        // Reset and re-trigger reveal animations with proper sequencing
+        revealItems.forEach((item) => {
             item.classList.remove('revealed');
+        });
+
+        // Force reflow to ensure CSS transitions reset
+        void page.offsetHeight;
+
+        // Now add the revealed class with staggered timing
+        revealItems.forEach((item, i) => {
             setTimeout(() => {
                 item.classList.add('revealed');
-            }, 100 + (i * 150));
+            }, 50 + (i * 100));
         });
     }
 
@@ -456,48 +523,60 @@ class BookPortfolio {
     // ===================================
 
     createParticles() {
-        const particleCount = 30;
+        // Reduced particle count for better performance
+        const particleCount = 15;
+
+        // Use DocumentFragment for batch DOM insertion
+        const fragment = document.createDocumentFragment();
 
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.animationDelay = `${Math.random() * 8}s`;
-            particle.style.animationDuration = `${6 + Math.random() * 4}s`;
-            particle.style.width = `${2 + Math.random() * 4}px`;
-            particle.style.height = particle.style.width;
-            particle.style.opacity = `${0.3 + Math.random() * 0.5}`;
-            this.particlesContainer.appendChild(particle);
+            const size = 2 + Math.random() * 3;
+            particle.style.cssText = `
+                left: ${Math.random() * 100}%;
+                animation-delay: ${Math.random() * 8}s;
+                animation-duration: ${8 + Math.random() * 4}s;
+                width: ${size}px;
+                height: ${size}px;
+            `;
+            fragment.appendChild(particle);
         }
+
+        this.particlesContainer.appendChild(fragment);
     }
 
     createDustParticles(pageEl) {
-        const dustCount = 15;
+        // Reduced dust count for better performance
+        const dustCount = 8;
         const rect = pageEl.getBoundingClientRect();
+        const fragment = document.createDocumentFragment();
 
         for (let i = 0; i < dustCount; i++) {
             const dust = document.createElement('div');
             dust.className = 'dust-particle';
+            const size = 2 + Math.random() * 3;
             dust.style.cssText = `
                 position: fixed;
-                width: ${2 + Math.random() * 3}px;
-                height: ${2 + Math.random() * 3}px;
-                background: rgba(212, 175, 55, ${0.5 + Math.random() * 0.5});
+                width: ${size}px;
+                height: ${size}px;
+                background: rgba(212, 175, 55, ${0.6 + Math.random() * 0.4});
                 border-radius: 50%;
                 left: ${rect.left + rect.width * 0.1}px;
                 top: ${rect.top + Math.random() * rect.height}px;
                 pointer-events: none;
                 z-index: 1000;
-                animation: dustFloat 1s ease-out forwards;
+                animation: dustFloat 0.8s ease-out forwards;
             `;
-
-            document.body.appendChild(dust);
-
-            // Remove after animation
-            setTimeout(() => {
-                dust.remove();
-            }, 1000);
+            fragment.appendChild(dust);
         }
+
+        document.body.appendChild(fragment);
+
+        // Batch remove all dust particles after animation
+        setTimeout(() => {
+            document.querySelectorAll('.dust-particle').forEach(d => d.remove());
+        }, 850);
     }
 
     // ===================================
@@ -519,7 +598,7 @@ class BookPortfolio {
     }
 }
 
-// Add dust particle animation
+// Add dust particle animation with GPU optimization
 const dustStyle = document.createElement('style');
 dustStyle.textContent = `
     @keyframes dustFloat {
@@ -532,15 +611,18 @@ dustStyle.textContent = `
             transform: translate(${Math.random() > 0.5 ? '' : '-'}${30 + Math.random() * 50}px, -${30 + Math.random() * 50}px) scale(0.5);
         }
     }
+    .dust-particle {
+        will-change: transform, opacity;
+        contain: strict;
+        isolation: isolate;
+    }
 `;
 document.head.appendChild(dustStyle);
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize the book portfolio
     window.bookPortfolio = new BookPortfolio();
-
-    // Add loading complete class
-    document.body.classList.add('loaded');
 
     // Console easter egg
     console.log(`
@@ -556,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `);
 });
 
-// Preload indicator
+// Preload indicator - fires after all resources loaded
 window.addEventListener('load', () => {
     // Hide any loading indicators
     const loader = document.querySelector('.loader');
