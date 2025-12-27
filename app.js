@@ -62,6 +62,7 @@ class BookPortfolio {
         this.initModals();
         this.initFeedback();
         this.createParticles(); // Gold floating particles
+        this.addGoldCorners(); // Gold corner decorations on all pages
 
         // Wait for BOTH fonts AND stylesheet to load before revealing
         // This prevents the flash caused by CSS not being applied yet
@@ -573,6 +574,28 @@ class BookPortfolio {
                 dust.remove();
             }, 1000);
         }
+    }
+
+    // ===================================
+    // GOLD CORNER DECORATIONS
+    // ===================================
+
+    addGoldCorners() {
+        // Add gold corners and frame to each page
+        this.pages.forEach(page => {
+            // Add gold frame border
+            const frame = document.createElement('div');
+            frame.className = 'page-gold-frame';
+            page.appendChild(frame);
+
+            // Add 4 gold corners
+            const corners = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+            corners.forEach(position => {
+                const corner = document.createElement('div');
+                corner.className = `gold-corner ${position}`;
+                page.appendChild(corner);
+            });
+        });
     }
 }
 
