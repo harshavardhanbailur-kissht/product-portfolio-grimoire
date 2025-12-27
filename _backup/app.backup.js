@@ -61,7 +61,6 @@ class BookPortfolio {
         this.initRevealAnimations();
         this.initModals();
         this.initFeedback();
-        this.createParticles(); // Gold floating particles
 
         // Wait for BOTH fonts AND stylesheet to load before revealing
         // This prevents the flash caused by CSS not being applied yet
@@ -368,7 +367,6 @@ class BookPortfolio {
 
         const currentPageEl = this.pages[this.currentPage];
         currentPageEl.classList.add('flipped');
-        this.createDustParticles(currentPageEl);
 
         const delay = this.animationsEnabled ? 800 : 0;
 
@@ -390,7 +388,6 @@ class BookPortfolio {
         this.currentPage--;
         const prevPageEl = this.pages[this.currentPage];
         prevPageEl.classList.remove('flipped');
-        this.createDustParticles(prevPageEl);
 
         const delay = this.animationsEnabled ? 800 : 0;
 
@@ -522,59 +519,9 @@ class BookPortfolio {
         this.soundEnabled = !this.soundEnabled;
         return this.soundEnabled;
     }
-
-    // ===================================
-    // GOLD PARTICLES
-    // ===================================
-
-    createParticles() {
-        if (!this.particlesContainer) return;
-
-        const particleCount = 30;
-
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.animationDelay = `${Math.random() * 8}s`;
-            particle.style.animationDuration = `${6 + Math.random() * 4}s`;
-            particle.style.width = `${2 + Math.random() * 4}px`;
-            particle.style.height = particle.style.width;
-            this.particlesContainer.appendChild(particle);
-        }
-    }
-
-    createDustParticles(pageEl) {
-        if (!this.animationsEnabled) return;
-
-        const dustCount = 15;
-        const rect = pageEl.getBoundingClientRect();
-
-        for (let i = 0; i < dustCount; i++) {
-            const dust = document.createElement('div');
-            dust.className = 'dust-particle';
-            dust.style.cssText = `
-                position: fixed;
-                width: ${2 + Math.random() * 3}px;
-                height: ${2 + Math.random() * 3}px;
-                background: rgba(212, 175, 55, ${0.5 + Math.random() * 0.5});
-                border-radius: 50%;
-                left: ${rect.left + rect.width * 0.1}px;
-                top: ${rect.top + Math.random() * rect.height}px;
-                pointer-events: none;
-                z-index: 1000;
-                animation: dustFloat 1s ease-out forwards;
-            `;
-
-            document.body.appendChild(dust);
-
-            // Remove after animation
-            setTimeout(() => {
-                dust.remove();
-            }, 1000);
-        }
-    }
 }
+
+// Dust particle animations removed for stability
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
