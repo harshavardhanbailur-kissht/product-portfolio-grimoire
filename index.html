@@ -14,101 +14,50 @@
 
     <!-- Critical CSS to prevent FOUC -->
     <style>
-        /* Critical styles for immediate render */
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            background: #0a0a0f;
-            overflow: hidden;
-        }
+        /* MINIMAL Critical CSS */
+        html, body { margin: 0; padding: 0; background: #0a0a0f; overflow: hidden; }
 
-        /* Loading skeleton - shows immediately while JS initializes */
+        /* Loading skeleton - ONLY thing visible during load */
         .page-skeleton {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0a0a0f; display: flex; align-items: center; justify-content: center;
             z-index: 9999;
-            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
         }
-
         .skeleton-book {
-            width: min(90vw, 800px);
-            height: min(80vh, 600px);
+            width: min(90vw, 800px); height: min(80vh, 600px);
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border: 2px solid #aa8c2c;
-            border-radius: 4px 16px 16px 4px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 5px solid #d4af37; border-radius: 4px 16px 16px 4px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
         }
-
         .skeleton-title {
-            width: 60%;
-            height: 40px;
+            width: 60%; height: 40px;
             background: linear-gradient(90deg, #aa8c2c 0%, #d4af37 50%, #aa8c2c 100%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 4px;
+            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px;
         }
-
         .skeleton-line {
-            width: 40%;
-            height: 16px;
+            width: 40%; height: 16px;
             background: linear-gradient(90deg, #333 0%, #444 50%, #333 100%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 4px;
+            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* AGGRESSIVE: Hide EVERYTHING except skeleton using visibility:hidden */
+        /* visibility:hidden prevents ALL rendering, not just opacity */
+        .book-scene, .particles, .ambient-glow, .nav-arrow, .toc-toggle, .page-indicator {
+            visibility: hidden !important;
         }
 
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        /* When loaded: hide skeleton, show content */
+        body.loaded .page-skeleton { display: none; }
+        body.loaded .book-scene,
+        body.loaded .particles,
+        body.loaded .ambient-glow,
+        body.loaded .nav-arrow,
+        body.loaded .toc-toggle,
+        body.loaded .page-indicator {
+            visibility: visible !important;
         }
-
-        /* Skeleton is the ONLY cover - fades out to reveal book behind it */
-        body.loaded .page-skeleton {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        /* Book is always visible - skeleton covers it until loaded */
-        .book,
-        .book-scene {
-            position: relative;
-        }
-
-        /* Reveal items animate in after skeleton fades */
-        .reveal-item {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        /* CRITICAL: Pages hidden by skeleton overlay, z-index ensures correct stacking */
-        .page {
-            position: absolute;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-        .page[data-page="0"] { z-index: 50 !important; }
-        .page[data-page="1"] { z-index: 49 !important; }
-        .page[data-page="2"] { z-index: 48 !important; }
-        .page[data-page="3"] { z-index: 47 !important; }
-        .page[data-page="4"] { z-index: 46 !important; }
-        .page[data-page="5"] { z-index: 45 !important; }
-        .page[data-page="6"] { z-index: 44 !important; }
-        .page[data-page="7"] { z-index: 43 !important; }
-        .page[data-page="8"] { z-index: 42 !important; }
     </style>
 
     <!-- Preload critical fonts for faster rendering -->
@@ -120,7 +69,7 @@
         rel="stylesheet">
 
     <!-- Main stylesheet with cache busting -->
-    <link rel="stylesheet" href="styles.css?v=20251228-v7">
+    <link rel="stylesheet" href="styles.css?v=20251228-v17">
 </head>
 
 <body>
@@ -967,6 +916,7 @@
                                         <div class="mistake-text">
                                             <strong>The Feature Trap</strong>
                                             <p>Focusing on features rather than the problems they solve</p>
+                                            <p class="mistake-detail">Great PMs obsess over user pain points, not feature lists. The best products emerge from deep understanding of "why" before "what".</p>
                                         </div>
                                     </div>
                                     <div class="mistake-item">
@@ -974,6 +924,7 @@
                                         <div class="mistake-text">
                                             <strong>The Data Delusion</strong>
                                             <p>Confusing metrics with insights and numbers with stories</p>
+                                            <p class="mistake-detail">Data tells you what happened, not why. Combine quantitative signals with qualitative empathy to unlock true insights.</p>
                                         </div>
                                     </div>
                                     <div class="mistake-item">
@@ -981,11 +932,45 @@
                                         <div class="mistake-text">
                                             <strong>The Stakeholder Silence</strong>
                                             <p>Building in isolation without continuous feedback loops</p>
+                                            <p class="mistake-detail">The best products are co-created. Regular check-ins, demos, and feedback sessions turn stakeholders into champions.</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="wisdom-footer">
-                                    <span class="community-badge">Product Community Contribution</span>
+                                    <a href="https://www.notion.so/The-3-most-common-mistakes-aspiring-PMs-make-24a567fe093280f497c6e86efb177e3a"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="community-badge-link"
+                                       onclick="event.stopPropagation();">
+                                        <span class="badge-icon">🔗</span>
+                                        Read Full Article on Notion
+                                        <span class="external-icon">↗</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Additional Wisdom Card -->
+                            <div class="wisdom-card secondary reveal-item">
+                                <div class="wisdom-header">
+                                    <span class="wisdom-icon">💡</span>
+                                    <h4 class="wisdom-title">The Antidotes</h4>
+                                </div>
+                                <div class="antidote-grid">
+                                    <div class="antidote-item">
+                                        <span class="antidote-icon">🎯</span>
+                                        <strong>Problem-First Thinking</strong>
+                                        <p>Start with user pain, not solution ideas</p>
+                                    </div>
+                                    <div class="antidote-item">
+                                        <span class="antidote-icon">🔍</span>
+                                        <strong>Story-Driven Data</strong>
+                                        <p>Pair every metric with user context</p>
+                                    </div>
+                                    <div class="antidote-item">
+                                        <span class="antidote-icon">🤝</span>
+                                        <strong>Continuous Alignment</strong>
+                                        <p>Weekly syncs, monthly demos, quarterly reviews</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

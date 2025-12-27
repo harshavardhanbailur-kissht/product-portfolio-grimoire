@@ -77,18 +77,14 @@ class BookPortfolio {
         });
 
         Promise.all([fontsReady, cssReady]).then(() => {
-            // Double RAF pattern for stable initial render
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    // Mark body as loaded - triggers skeleton hide + cover reveal
-                    document.body.classList.add('loaded');
+            // Add a small delay to ensure everything is truly ready
+            setTimeout(() => {
+                // Reveal the page - this switches from skeleton to content
+                document.body.classList.add('loaded');
 
-                    // Reveal cover page content AFTER skeleton has faded
-                    setTimeout(() => {
-                        this.revealPageContent(0);
-                    }, 450);
-                });
-            });
+                // Reveal cover page content
+                this.revealPageContent(0);
+            }, 50);
         });
     }
 
@@ -329,10 +325,10 @@ class BookPortfolio {
 
     applyAnimationState() {
         if (this.animationsEnabled) {
-            document.body.classList.remove('no-animations');
+            document.body.classList.remove('animations-disabled');
             if (this.animToggle) this.animToggle.classList.add('active');
         } else {
-            document.body.classList.add('no-animations');
+            document.body.classList.add('animations-disabled');
             if (this.animToggle) this.animToggle.classList.remove('active');
         }
     }
@@ -531,16 +527,36 @@ class BookPortfolio {
     createParticles() {
         if (!this.particlesContainer) return;
 
-        const particleCount = 30;
+        // Increased particle count for mystical experience
+        const particleCount = 60;
 
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
+
+            // Spread particles across the screen
             particle.style.left = `${Math.random() * 100}%`;
-            particle.style.animationDelay = `${Math.random() * 8}s`;
-            particle.style.animationDuration = `${6 + Math.random() * 4}s`;
-            particle.style.width = `${2 + Math.random() * 4}px`;
-            particle.style.height = particle.style.width;
+
+            // Longer, varied animation delays for continuous effect
+            particle.style.animationDelay = `${Math.random() * 15}s`;
+
+            // Longer durations (12-22s) for slower, more mystical movement
+            particle.style.animationDuration = `${12 + Math.random() * 10}s`;
+
+            // Varied sizes (2-6px) for depth perception
+            const size = 2 + Math.random() * 4;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+
+            // Brighter particles are larger
+            if (size > 4) {
+                particle.style.boxShadow = `
+                    0 0 ${size * 2}px var(--gold-primary),
+                    0 0 ${size * 4}px rgba(212, 175, 55, 0.6),
+                    0 0 ${size * 6}px rgba(212, 175, 55, 0.3)
+                `;
+            }
+
             this.particlesContainer.appendChild(particle);
         }
     }
