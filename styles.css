@@ -57,22 +57,10 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Prevent FOUC - ensure animations start in proper state */
+/* Prevent FOUC - ensure reveals start hidden */
 body:not(.loaded) .reveal-item {
     opacity: 0 !important;
     transform: translateY(20px) !important;
-}
-
-body:not(.loaded) .particles,
-body:not(.loaded) .ambient-glow {
-    opacity: 0;
-}
-
-/* Smooth fade-in for ambient effects after load */
-body.loaded .particles,
-body.loaded .ambient-glow {
-    opacity: 1;
-    transition: opacity 1s ease-out;
 }
 
 body {
@@ -90,86 +78,7 @@ body {
         linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-dark) 100%);
 }
 
-/* Ambient Particles */
-.particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-    overflow: hidden;
-    /* GPU optimization - prevent interference with 3D page elements */
-    isolation: isolate;
-    contain: strict;
-    will-change: contents;
-}
-
-.particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: var(--gold-primary);
-    border-radius: 50%;
-    opacity: 0;
-    animation: floatParticle 10s infinite ease-in-out;
-    will-change: transform, opacity;
-    contain: layout style;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-
-@keyframes floatParticle {
-    0% {
-        opacity: 0;
-        transform: translateY(100vh) translateZ(0);
-    }
-
-    10% {
-        opacity: 0.6;
-    }
-
-    90% {
-        opacity: 0.6;
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateY(-100vh) translateZ(0);
-    }
-}
-
-/* Ambient Glow */
-.ambient-glow {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 120%;
-    height: 120%;
-    transform: translate(-50%, -50%) translateZ(0);
-    background: radial-gradient(ellipse at center,
-            rgba(212, 175, 55, 0.04) 0%,
-            transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-    animation: pulseGlow 8s infinite ease-in-out;
-    will-change: opacity;
-    isolation: isolate;
-    contain: layout style;
-}
-
-@keyframes pulseGlow {
-
-    0%,
-    100% {
-        opacity: 0.5;
-    }
-
-    50% {
-        opacity: 1;
-    }
-}
+/* Particles and ambient glow removed for stability - using static design elements instead */
 
 /* ===================================
    BOOK SCENE & CONTAINER
@@ -348,6 +257,7 @@ body {
     transform-origin: left center;
     transform-style: preserve-3d;
     transition: transform var(--flip-duration) cubic-bezier(0.4, 0, 0.2, 1),
+        opacity var(--flip-duration) cubic-bezier(0.4, 0, 0.2, 1),
         z-index 0.1s;
     /* Cross-browser backface visibility */
     backface-visibility: hidden;
@@ -394,14 +304,14 @@ body {
 .page.flipped {
     transform: rotateY(-180deg);
     z-index: 1 !important;
-    /* Ensure flipped pages don't cause visual artifacts */
-    visibility: hidden;
+    /* Use opacity for animated fade-out during flip */
+    opacity: 0;
     pointer-events: none;
 }
 
 .page:not(.flipped) {
     z-index: 10;
-    visibility: visible;
+    opacity: 1;
     pointer-events: auto;
 }
 
@@ -543,7 +453,8 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 16px;
+    gap: 24px;
+    padding: 48px 24px;
 }
 
 .cover-subtitle {
@@ -557,33 +468,16 @@ body {
 
 .cover-title {
     font-family: 'Cinzel', serif;
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-size: clamp(3rem, 9vw, 5.5rem);
     font-weight: 700;
     line-height: 1.1;
+    letter-spacing: 0.02em;
     color: var(--gold-primary);
+    /* Static elevated glow - no animation */
     text-shadow:
-        0 0 40px var(--glow-gold),
-        0 4px 8px var(--shadow-deep);
-    animation: titleGlow 3s infinite ease-in-out;
-    /* GPU hint for animation */
-    will-change: text-shadow;
-}
-
-@keyframes titleGlow {
-
-    0%,
-    100% {
-        text-shadow:
-            0 0 40px var(--glow-gold),
-            0 4px 8px var(--shadow-deep);
-    }
-
-    50% {
-        text-shadow:
-            0 0 60px var(--glow-gold),
-            0 0 80px rgba(212, 175, 55, 0.3),
-            0 4px 8px var(--shadow-deep);
-    }
+        0 0 60px var(--glow-gold),
+        0 0 30px rgba(212, 175, 55, 0.5),
+        0 4px 12px var(--shadow-deep);
 }
 
 .cover-divider {
@@ -601,28 +495,19 @@ body {
 
 .divider-icon {
     color: var(--gold-primary);
-    font-size: 1.2rem;
-    animation: rotateStar 8s linear infinite;
-    /* GPU hint for rotation animation */
-    will-change: transform;
-}
-
-@keyframes rotateStar {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
+    font-size: 1.4rem;
+    /* Static - no rotation animation */
 }
 
 .cover-tagline {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
     font-style: italic;
-    color: var(--text-muted);
-    max-width: 80%;
+    font-weight: 400;
+    color: var(--text-light);
+    max-width: 70%;
+    line-height: 1.6;
+    text-align: center;
 }
 
 .cover-author {
@@ -649,41 +534,16 @@ body {
 }
 
 .cover-instruction {
-    margin-top: 32px;
-    font-size: 0.9rem;
+    margin-top: 48px;
+    font-size: 1rem;
     color: var(--text-muted);
-    animation: fadeInOut 2s infinite ease-in-out;
+    /* Static - no fadeInOut animation */
 }
 
 .pulse-arrow {
     display: inline-block;
-    animation: pulseArrow 1s infinite ease-in-out;
-}
-
-@keyframes pulseArrow {
-
-    0%,
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-
-    50% {
-        transform: translateX(5px);
-        opacity: 0.6;
-    }
-}
-
-@keyframes fadeInOut {
-
-    0%,
-    100% {
-        opacity: 0.6;
-    }
-
-    50% {
-        opacity: 1;
-    }
+    margin-right: 8px;
+    /* Static - no pulse animation */
 }
 
 /* ===================================
@@ -692,8 +552,8 @@ body {
 
 .chapter-header {
     text-align: center;
-    margin-bottom: 32px;
-    padding-bottom: 24px;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
     border-bottom: 2px solid var(--parchment-edge);
 }
 
@@ -709,11 +569,12 @@ body {
 
 .chapter-title {
     font-family: 'Cinzel', serif;
-    font-size: clamp(1.8rem, 5vw, 2.5rem);
-    font-weight: 600;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 700;
     color: var(--gold-primary);
-    /* Gold title */
-    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    margin-bottom: 12px;
 }
 
 .chapter-subtitle {
@@ -739,7 +600,7 @@ body {
 
 /* Content Sections */
 .content-section {
-    margin-bottom: 28px;
+    margin-bottom: 40px;
 }
 
 .section-title {
@@ -1188,22 +1049,9 @@ body {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.1) 0%, transparent 60%);
-    animation: rotateGlow 10s linear infinite;
+    background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
     pointer-events: none;
-    /* GPU hints for rotation animation */
-    will-change: transform;
-    contain: strict;
-}
-
-@keyframes rotateGlow {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
+    /* Static glow - no rotation animation */
 }
 
 .wisdom-header {
@@ -1545,24 +1393,8 @@ body {
 
 /* Remove staggered delays - handled by JS for better control */
 
-/* Page flip animation - dust effect */
-.page.flipping {
-    animation: pageDust 0.6s ease-out;
-}
-
-@keyframes pageDust {
-    0% {
-        filter: brightness(1);
-    }
-
-    50% {
-        filter: brightness(1.2);
-    }
-
-    100% {
-        filter: brightness(1);
-    }
-}
+/* Page flip animation removed - using CSS transitions for opacity instead */
+/* The pageDust animation was conflicting with opacity transitions in .page.flipped */
 
 /* ===================================
    RESPONSIVE DESIGN
@@ -2489,4 +2321,23 @@ iframe {
 
 .modal-close:hover {
     color: #fff;
+}
+
+/* ===================================
+   ACCESSIBILITY: Reduced Motion
+   Respect user's motion preferences
+   =================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .page {
+        transition: transform 0.3s ease-out !important;
+    }
 }

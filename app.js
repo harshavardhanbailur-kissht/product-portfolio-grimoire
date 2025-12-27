@@ -56,24 +56,37 @@ class BookPortfolio {
         // this.renderPages(); // Disabled: Using static HTML
         // this.reinitializeDOMElements(); // Disabled: Preserving static HTML structure
         this.bindEvents();
-        this.createParticles();
         this.restoreAnimationPreference();
         this.updateNavigation();
         this.initRevealAnimations();
         this.initModals();
         this.initFeedback();
 
-        // Mark body as loaded after a brief delay for fonts to settle
-        requestAnimationFrame(() => {
-            document.body.classList.add('loaded');
+        // Wait for BOTH fonts AND stylesheet to load before revealing
+        // This prevents the flash caused by CSS not being applied yet
+        const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+        const cssReady = new Promise(resolve => {
+            const stylesheet = document.querySelector('link[href*="styles.css"]');
+            if (!stylesheet) return resolve();
+            if (stylesheet.sheet) return resolve(); // Already loaded
+            stylesheet.onload = resolve;
+            stylesheet.onerror = resolve;
+            setTimeout(resolve, 1000); // Fallback timeout
+        });
 
-            // Force initial reveal for cover page with proper timing
-            // Use a small delay to ensure fonts and styles are fully applied
-            setTimeout(() => {
+        Promise.all([fontsReady, cssReady]).then(() => {
+            // Double RAF pattern for stable initial render
+            requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    this.revealPageContent(0);
+                    // Mark body as loaded - triggers skeleton hide + cover reveal
+                    document.body.classList.add('loaded');
+
+                    // Reveal cover page content AFTER skeleton has faded
+                    setTimeout(() => {
+                        this.revealPageContent(0);
+                    }, 450);
                 });
-            }, 100);
+            });
         });
     }
 
@@ -316,15 +329,9 @@ class BookPortfolio {
         if (this.animationsEnabled) {
             document.body.classList.remove('no-animations');
             if (this.animToggle) this.animToggle.classList.add('active');
-            if (this.particlesContainer) this.particlesContainer.style.display = '';
-            const glow = document.querySelector('.ambient-glow');
-            if (glow) glow.style.display = '';
         } else {
             document.body.classList.add('no-animations');
             if (this.animToggle) this.animToggle.classList.remove('active');
-            if (this.particlesContainer) this.particlesContainer.style.display = 'none';
-            const glow = document.querySelector('.ambient-glow');
-            if (glow) glow.style.display = 'none';
         }
     }
 
@@ -359,16 +366,11 @@ class BookPortfolio {
         this.playPageFlipSound();
 
         const currentPageEl = this.pages[this.currentPage];
-        currentPageEl.classList.add('flipped', 'flipping');
-
-        if (this.animationsEnabled) {
-            this.createDustParticles(currentPageEl);
-        }
+        currentPageEl.classList.add('flipped');
 
         const delay = this.animationsEnabled ? 800 : 0;
 
         setTimeout(() => {
-            currentPageEl.classList.remove('flipping');
             this.currentPage++;
             this.updateNavigation();
             this.updateTOC();
@@ -386,16 +388,10 @@ class BookPortfolio {
         this.currentPage--;
         const prevPageEl = this.pages[this.currentPage];
         prevPageEl.classList.remove('flipped');
-        prevPageEl.classList.add('flipping');
-
-        if (this.animationsEnabled) {
-            this.createDustParticles(prevPageEl);
-        }
 
         const delay = this.animationsEnabled ? 800 : 0;
 
         setTimeout(() => {
-            prevPageEl.classList.remove('flipping');
             this.updateNavigation();
             this.updateTOC();
             this.revealPageContent(this.currentPage);
@@ -504,66 +500,7 @@ class BookPortfolio {
         });
     }
 
-    // ===================================
-    // PARTICLE EFFECTS
-    // ===================================
-
-    createParticles() {
-        // Reduced particle count for better performance
-        const particleCount = 15;
-
-        // Use DocumentFragment for batch DOM insertion
-        const fragment = document.createDocumentFragment();
-
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            const size = 2 + Math.random() * 3;
-            particle.style.cssText = `
-                left: ${Math.random() * 100}%;
-                animation-delay: ${Math.random() * 8}s;
-                animation-duration: ${8 + Math.random() * 4}s;
-                width: ${size}px;
-                height: ${size}px;
-            `;
-            fragment.appendChild(particle);
-        }
-
-        this.particlesContainer.appendChild(fragment);
-    }
-
-    createDustParticles(pageEl) {
-        // Reduced dust count for better performance
-        const dustCount = 8;
-        const rect = pageEl.getBoundingClientRect();
-        const fragment = document.createDocumentFragment();
-
-        for (let i = 0; i < dustCount; i++) {
-            const dust = document.createElement('div');
-            dust.className = 'dust-particle';
-            const size = 2 + Math.random() * 3;
-            dust.style.cssText = `
-                position: fixed;
-                width: ${size}px;
-                height: ${size}px;
-                background: rgba(212, 175, 55, ${0.6 + Math.random() * 0.4});
-                border-radius: 50%;
-                left: ${rect.left + rect.width * 0.1}px;
-                top: ${rect.top + Math.random() * rect.height}px;
-                pointer-events: none;
-                z-index: 1000;
-                animation: dustFloat 0.8s ease-out forwards;
-            `;
-            fragment.appendChild(dust);
-        }
-
-        document.body.appendChild(fragment);
-
-        // Batch remove all dust particles after animation
-        setTimeout(() => {
-            document.querySelectorAll('.dust-particle').forEach(d => d.remove());
-        }, 850);
-    }
+    // Particle effects removed for stability - using static visual hierarchy instead
 
     // ===================================
     // SOUND
@@ -584,26 +521,7 @@ class BookPortfolio {
     }
 }
 
-// Add dust particle animation with GPU optimization
-const dustStyle = document.createElement('style');
-dustStyle.textContent = `
-    @keyframes dustFloat {
-        0% {
-            opacity: 1;
-            transform: translate(0, 0) scale(1);
-        }
-        100% {
-            opacity: 0;
-            transform: translate(${Math.random() > 0.5 ? '' : '-'}${30 + Math.random() * 50}px, -${30 + Math.random() * 50}px) scale(0.5);
-        }
-    }
-    .dust-particle {
-        will-change: transform, opacity;
-        contain: strict;
-        isolation: isolate;
-    }
-`;
-document.head.appendChild(dustStyle);
+// Dust particle animations removed for stability
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
