@@ -555,11 +555,14 @@ body.loaded .book-scene {
         0 0 40px rgba(212, 175, 55, 0.2),
         0 10px 40px var(--shadow-deep),
         inset 0 0 60px rgba(0, 0, 0, 0.3);
-    /* 3D transform setup for page flip */
+    /* CRITICAL: Set initial transform for animation to work */
     transform: rotateY(0deg);
     transform-origin: left center;
     transform-style: preserve-3d;
-    /* Initial state - transitions defined in .flipped/.not(.flipped) selectors */
+    /* Include opacity in transition for smooth flip */
+    transition: transform var(--flip-duration) cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease;
+    /* Set initial opacity for animation */
     opacity: 1;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -597,23 +600,20 @@ body.loaded .book-scene {
 
 /* Page flip states - smooth 3D rotation animation */
 .page.flipped {
-    transform: rotateY(-180deg) !important;
+    transform: rotateY(-180deg);
     z-index: 1 !important;
-    pointer-events: none !important;
-    opacity: 0 !important;
-    /* Smooth flip: transform takes 0.8s, opacity fades from 0.3s-0.6s */
+    pointer-events: none;
+    /* Fade out during flip for smooth transition - starts at 50% of flip */
+    opacity: 0;
     transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.3s ease-in 0.3s !important;
+                opacity 0.3s ease-in 0.3s,
+                z-index 0s linear 0s;
 }
 
-/* Non-flipped pages - explicit visible state for animation */
+/* Non-flipped pages - ensure they're interactive and visible */
 .page:not(.flipped) {
-    transform: rotateY(0deg);
-    opacity: 1;
     pointer-events: auto;
-    /* Transition for reverse animation (going back) */
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.2s ease-out !important;
+    /* Let data-page z-index rules take precedence */
 }
 
 /* Page flip animation keyframes for extra smoothness */
