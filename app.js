@@ -843,6 +843,89 @@ class BookPortfolio {
 
         // Update page indicator
         this.pageIndicator.querySelector('.current').textContent = this.pageNames[this.currentPage] || `Page ${this.currentPage}`;
+
+        // Update book progress indicator (Goal-Gradient Effect)
+        this.updateBookProgress();
+
+        // Announce page change for screen readers (Accessibility)
+        this.announcePageChange();
+
+        // Check for journey completion (Peak-End Effect)
+        this.checkCompletion();
+    }
+
+    // Book progress bar - shows reading progress
+    updateBookProgress() {
+        const progressBar = document.getElementById('bookProgress');
+        if (progressBar) {
+            // Calculate progress (0-100%)
+            const progress = ((this.currentPage + 1) / this.totalPages) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+    }
+
+    // ARIA live region announcement for accessibility
+    announcePageChange() {
+        const announcer = document.getElementById('pageAnnouncer');
+        if (announcer) {
+            const pageName = this.pageNames[this.currentPage] || `Page ${this.currentPage + 1}`;
+            announcer.textContent = `Now viewing: ${pageName}`;
+        }
+    }
+
+    // Peak-End Effect - celebration when user reaches the last page
+    checkCompletion() {
+        const badge = document.getElementById('completionBadge');
+        if (badge && this.currentPage === this.totalPages - 1) {
+            // Only show once per session
+            if (!this.celebrationShown) {
+                this.celebrationShown = true;
+                // Small delay for dramatic effect
+                setTimeout(() => {
+                    badge.classList.add('revealed');
+                    // Create celebration particles
+                    this.createCelebrationParticles();
+                }, 500);
+            }
+        }
+    }
+
+    // Gold particle burst for celebration
+    createCelebrationParticles() {
+        if (!this.animationsEnabled) return;
+
+        const container = this.particlesContainer;
+        if (!container) return;
+
+        // Create burst of gold particles from center
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle celebration-particle';
+
+            // Random angle and distance for burst effect
+            const angle = (Math.PI * 2 * i) / 30;
+            const distance = 100 + Math.random() * 200;
+            const endX = Math.cos(angle) * distance;
+            const endY = Math.sin(angle) * distance;
+
+            // Start from center
+            particle.style.left = '50%';
+            particle.style.top = '50%';
+            particle.style.opacity = '1';
+            particle.style.transform = 'translate(-50%, -50%)';
+            particle.style.transition = 'all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+            container.appendChild(particle);
+
+            // Animate outward
+            requestAnimationFrame(() => {
+                particle.style.transform = `translate(calc(-50% + ${endX}px), calc(-50% + ${endY}px))`;
+                particle.style.opacity = '0';
+            });
+
+            // Remove after animation
+            setTimeout(() => particle.remove(), 1500);
+        }
     }
 
     updateTOC() {
