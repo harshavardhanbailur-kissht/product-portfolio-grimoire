@@ -3,6 +3,315 @@
  * Interactive Book Portfolio - Main Application
  */
 
+/**
+ * Three.js Faceted Gem Loader
+ * Premium 3D gem with gold metallic material and multi-axis rotation
+ */
+class GemLoader {
+    constructor() {
+        this.canvas = document.getElementById('gemCanvas');
+        if (!this.canvas || typeof THREE === 'undefined') {
+            console.warn('GemLoader: Canvas or Three.js not available');
+            this.isActive = false;
+            return;
+        }
+
+        this.isActive = true;
+        this.animationId = null;
+        this.isReady = false;
+
+        // Three.js setup
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.renderer = new THREE.WebGLRenderer({
+            canvas: this.canvas,
+            antialias: true,
+            alpha: true
+        });
+
+        // Small delay to let CSS fully apply before rendering
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                this.init();
+                this.isReady = true;
+            });
+        });
+    }
+
+    /**
+     * Create environment map for realistic metallic reflections
+     * Uses PMREMGenerator with a custom scene containing warm-toned lights
+     */
+    createEnvironment() {
+        // Create a simple environment scene for gold reflections
+        const envScene = new THREE.Scene();
+
+        // Warm gradient background for gold-friendly reflections
+        envScene.background = new THREE.Color(0x1a1510);
+
+        // Create light spheres that will reflect on the gold surface
+        const sphereGeometry = new THREE.SphereGeometry(50, 16, 16);
+
+        // Warm white sphere (main highlight)
+        const warmWhiteMaterial = new THREE.MeshBasicMaterial({
+            color: 0xFFFAF0,
+            side: THREE.BackSide
+        });
+        const warmSphere = new THREE.Mesh(sphereGeometry, warmWhiteMaterial);
+        warmSphere.position.set(100, 100, 50);
+        envScene.add(warmSphere);
+
+        // Gold accent sphere
+        const goldMaterial = new THREE.MeshBasicMaterial({
+            color: 0xDAA520,
+            side: THREE.BackSide
+        });
+        const goldSphere = new THREE.Mesh(sphereGeometry, goldMaterial);
+        goldSphere.position.set(-80, -50, 80);
+        envScene.add(goldSphere);
+
+        // Subtle orange for warmth
+        const orangeMaterial = new THREE.MeshBasicMaterial({
+            color: 0xCD853F,
+            side: THREE.BackSide
+        });
+        const orangeSphere = new THREE.Mesh(sphereGeometry, orangeMaterial);
+        orangeSphere.position.set(0, -100, -50);
+        envScene.add(orangeSphere);
+
+        // Generate PMREM environment map
+        const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+        pmremGenerator.compileEquirectangularShader();
+
+        const envMap = pmremGenerator.fromScene(envScene, 0.04).texture;
+        this.envMap = envMap;
+        this.scene.environment = envMap;
+
+        // Clean up
+        pmremGenerator.dispose();
+        envScene.traverse((obj) => {
+            if (obj.geometry) obj.geometry.dispose();
+            if (obj.material) obj.material.dispose();
+        });
+    }
+
+    init() {
+        // Setup renderer
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.setClearColor(0x000000, 0); // Transparent background
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.2;
+
+        // Camera position
+        this.camera.position.z = 5;
+
+        // Create environment map for realistic metallic reflections
+        this.createEnvironment();
+
+        // Create gem geometry (Icosahedron for 20 faceted faces - premium gem look)
+        const geometry = new THREE.IcosahedronGeometry(1.2, 0); // 0 = low poly faceted
+
+        // Premium glossy gold using MeshPhysicalMaterial
+        // Real gold color is warmer/more orange than pure yellow
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0xD4A84B,           // Warm gold (less yellow, more orange)
+            metalness: 1.0,            // Fully metallic
+            roughness: 0.15,           // Very smooth for glossy look
+            flatShading: true,         // Shows facets clearly
+            clearcoat: 0.3,            // Glossy clearcoat layer
+            clearcoatRoughness: 0.1,   // Smooth clearcoat
+            reflectivity: 1.0,         // Maximum reflectivity
+            envMapIntensity: 1.5       // Strong environment reflections
+        });
+
+        this.gem = new THREE.Mesh(geometry, material);
+        this.scene.add(this.gem);
+
+        // Lighting optimized for gold reflections
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        this.scene.add(ambientLight);
+
+        // Key light - warm white for gold highlights
+        const keyLight = new THREE.DirectionalLight(0xffffff, 2.0);
+        keyLight.position.set(5, 5, 5);
+        this.scene.add(keyLight);
+
+        // Fill light - warm gold tone
+        const fillLight = new THREE.DirectionalLight(0xFFE4B5, 1.0);
+        fillLight.position.set(-5, 0, 5);
+        this.scene.add(fillLight);
+
+        // Rim light - adds edge definition
+        const rimLight = new THREE.DirectionalLight(0xFFF8DC, 0.8);
+        rimLight.position.set(0, -5, -5);
+        this.scene.add(rimLight);
+
+        // Apply environment map to the gem
+        if (this.envMap) {
+            material.envMap = this.envMap;
+        }
+
+        // Handle window resize
+        this.handleResize = () => {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+        };
+        window.addEventListener('resize', this.handleResize);
+
+        // Start animation
+        this.animate();
+    }
+
+    animate() {
+        if (!this.isActive) return;
+
+        this.animationId = requestAnimationFrame(() => this.animate());
+
+        // Multi-axis rotation (smooth and elegant)
+        this.gem.rotation.x += 0.005;
+        this.gem.rotation.y += 0.01;
+        this.gem.rotation.z += 0.003;
+
+        // Subtle scale pulse (breathing effect)
+        const scale = 1 + Math.sin(Date.now() * 0.002) * 0.05;
+        this.gem.scale.set(scale, scale, scale);
+
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    /**
+     * Shatter effect - gem explodes into particles
+     */
+    shatter(callback) {
+        if (!this.isActive) {
+            callback();
+            return;
+        }
+
+        // Wait for gem to be ready before shattering
+        if (!this.isReady || !this.gem) {
+            setTimeout(() => this.shatter(callback), 100);
+            return;
+        }
+
+        // Cancel normal animation
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+        }
+
+        // Create shatter particles from gem vertices
+        this.createShatterParticles();
+
+        const duration = 800;
+        const start = Date.now();
+
+        const animateShatter = () => {
+            const elapsed = Date.now() - start;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Eased progress for smooth feel
+            const eased = 1 - Math.pow(1 - progress, 3);
+
+            // Main gem shrinks and spins fast
+            const scale = Math.max(0, 1 - eased * 1.5);
+            this.gem.scale.set(scale, scale, scale);
+            this.gem.rotation.y += 0.2;
+            this.gem.rotation.x += 0.1;
+
+            // Animate particles flying outward
+            if (this.particles) {
+                this.particles.forEach((particle) => {
+                    const particleProgress = Math.min(elapsed / 600, 1);
+                    const particleEased = 1 - Math.pow(1 - particleProgress, 2);
+
+                    // Fly outward
+                    particle.position.x = particle.userData.direction.x * particleEased * 4;
+                    particle.position.y = particle.userData.direction.y * particleEased * 4;
+                    particle.position.z = particle.userData.direction.z * particleEased * 4;
+
+                    // Shrink and spin
+                    const pScale = Math.max(0, 1 - particleProgress);
+                    particle.scale.set(pScale, pScale, pScale);
+                    particle.rotation.x += 0.1;
+                    particle.rotation.y += 0.15;
+                });
+            }
+
+            this.renderer.render(this.scene, this.camera);
+
+            if (progress < 1) {
+                requestAnimationFrame(animateShatter);
+            } else {
+                // Done - trigger callback
+                callback();
+            }
+        };
+
+        animateShatter();
+    }
+
+    /**
+     * Create particle meshes for shatter effect
+     */
+    createShatterParticles() {
+        this.particles = [];
+        const particleCount = 20;
+        const particleGeometry = new THREE.TetrahedronGeometry(0.15, 0);
+        const particleMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xD4A84B,            // Match gem gold color
+            metalness: 1.0,
+            roughness: 0.15,
+            flatShading: true,
+            clearcoat: 0.3,
+            envMap: this.envMap,
+            envMapIntensity: 1.5
+        });
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+
+            // Random direction for explosion
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            particle.userData.direction = {
+                x: Math.sin(phi) * Math.cos(theta),
+                y: Math.sin(phi) * Math.sin(theta),
+                z: Math.cos(phi)
+            };
+
+            // Start at gem center
+            particle.position.set(0, 0, 0);
+
+            this.scene.add(particle);
+            this.particles.push(particle);
+        }
+    }
+
+    dispose() {
+        this.isActive = false;
+
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+        }
+
+        window.removeEventListener('resize', this.handleResize);
+
+        if (this.renderer) {
+            this.renderer.dispose();
+        }
+
+        if (this.gem && this.gem.geometry) {
+            this.gem.geometry.dispose();
+        }
+
+        if (this.gem && this.gem.material) {
+            this.gem.material.dispose();
+        }
+    }
+}
+
 class BookPortfolio {
     constructor() {
         // DOM Elements
@@ -64,6 +373,25 @@ class BookPortfolio {
         this.createParticles(); // Gold floating particles
         this.addGoldCorners(); // Gold corner decorations on all pages
 
+        // Check for reduced motion preference (accessibility)
+        this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Initialize Three.js Gem Loader (only if motion is allowed)
+        if (!this.prefersReducedMotion) {
+            this.gemLoader = new GemLoader();
+        }
+
+        // UI/UX: Progress indicator elements
+        const progressFill = document.getElementById('progressFill');
+        const loadingText = document.getElementById('loadingText');
+
+        // UI/UX: Animate progress with Goal-Gradient Effect (starts at 20%)
+        // Research shows users feel closer to completion when starting higher
+        const updateProgress = (percent, text) => {
+            if (progressFill) progressFill.style.width = `${percent}%`;
+            if (loadingText) loadingText.textContent = text;
+        };
+
         // Wait for BOTH fonts AND stylesheet to load before revealing
         // This prevents the flash caused by CSS not being applied yet
         const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
@@ -76,15 +404,54 @@ class BookPortfolio {
             setTimeout(resolve, 1000); // Fallback timeout
         });
 
-        Promise.all([fontsReady, cssReady]).then(() => {
-            // Add a small delay to ensure everything is truly ready
-            setTimeout(() => {
-                // Reveal the page - this switches from skeleton to content
-                document.body.classList.add('loaded');
+        // UI/UX: Staggered progress updates for system status visibility
+        setTimeout(() => updateProgress(35, 'Loading fonts'), 500);
+        setTimeout(() => updateProgress(55, 'Loading styles'), 1200);
+        setTimeout(() => updateProgress(75, 'Preparing content'), 2200);
+        setTimeout(() => updateProgress(90, 'Almost ready'), 3200);
 
-                // Reveal cover page content
-                this.revealPageContent(0);
-            }, 50);
+        // Ensure loader shows for at least 4 seconds for smooth, glitch-free UX
+        const minLoadTime = new Promise(resolve => setTimeout(resolve, 4000));
+
+        Promise.all([fontsReady, cssReady, minLoadTime]).then(() => {
+            updateProgress(100, 'Welcome');
+
+            // For reduced motion: skip 3D animation, just fade out
+            if (this.prefersReducedMotion) {
+                const skeleton = document.getElementById('pageSkeleton');
+                if (skeleton) skeleton.classList.add('fade-out');
+                setTimeout(() => {
+                    document.body.classList.add('loaded');
+                    setTimeout(() => this.revealPageContent(0), 400);
+                }, 400);
+                return;
+            }
+
+            // Double requestAnimationFrame ensures browser has fully painted
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    // Trigger gem shatter animation (Three.js)
+                    this.gemLoader.shatter(() => {
+                        // Start fade-out transition on loader
+                        const skeleton = document.getElementById('pageSkeleton');
+                        if (skeleton) {
+                            skeleton.classList.add('fade-out');
+                        }
+
+                        // Wait for shatter to complete, then start content reveal
+                        setTimeout(() => {
+                            // Clean up Three.js resources
+                            this.gemLoader.dispose();
+
+                            // Reveal content with smooth fade-in
+                            document.body.classList.add('loaded');
+
+                            // Reveal page content after CSS transitions have time to start
+                            setTimeout(() => this.revealPageContent(0), 400);
+                        }, 300); // Small delay for fade-out to begin
+                    });
+                });
+            });
         });
     }
 
@@ -136,6 +503,7 @@ class BookPortfolio {
         document.getElementById('feedbackModal').classList.remove('open');
         document.getElementById('feedbackMsg').value = '';
     }
+
 
     // Legacy dynamic rendering methods (disabled/removed)
     /*

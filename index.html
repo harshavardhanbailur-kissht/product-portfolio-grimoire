@@ -17,46 +17,118 @@
         /* MINIMAL Critical CSS */
         html, body { margin: 0; padding: 0; background: #0a0a0f; overflow: hidden; }
 
-        /* Loading skeleton - ONLY thing visible during load */
+        /* Three.js Gem Loader Container */
         .page-skeleton {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0a0a0f; display: flex; align-items: center; justify-content: center;
+            position: fixed; inset: 0;
+            background: radial-gradient(ellipse at center, #12121a 0%, #0a0a0f 100%);
             z-index: 9999;
-        }
-        .skeleton-book {
-            width: min(90vw, 800px); height: min(80vh, 600px);
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border: 5px solid #d4af37; border-radius: 4px 16px 16px 4px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
-        }
-        .skeleton-title {
-            width: 60%; height: 40px;
-            background: linear-gradient(90deg, #aa8c2c 0%, #d4af37 50%, #aa8c2c 100%);
-            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px;
-        }
-        .skeleton-line {
-            width: 40%; height: 16px;
-            background: linear-gradient(90deg, #333 0%, #444 50%, #333 100%);
-            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px;
-        }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* AGGRESSIVE: Hide EVERYTHING except skeleton using visibility:hidden */
-        /* visibility:hidden prevents ALL rendering, not just opacity */
-        .book-scene, .particles, .ambient-glow, .nav-arrow, .toc-toggle, .page-indicator {
-            visibility: hidden !important;
+            opacity: 1;
+            transition: opacity 0.6s ease-out;
         }
 
-        /* When loaded: hide skeleton, show content */
-        body.loaded .page-skeleton { display: none; }
-        body.loaded .book-scene,
-        body.loaded .particles,
-        body.loaded .ambient-glow,
-        body.loaded .nav-arrow,
-        body.loaded .toc-toggle,
+        /* Fade out loader when transitioning */
+        .page-skeleton.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #gemCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* CRITICAL: Hide ALL content with display:none to prevent ANY flash */
+        .book-scene, .particles, .ambient-glow, .nav-arrow, .toc-toggle, .page-indicator, .feedback-orb, .feedback-btn {
+            display: none !important;
+            opacity: 0;
+        }
+
+        /* Progress indicator and loading text (UI/UX: System Status Visibility) */
+        .loading-status {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: rgba(212, 168, 75, 0.8);
+            font-family: 'Cinzel', serif;
+            z-index: 10000;
+        }
+        .loading-text {
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            margin-bottom: 16px;
+            opacity: 0.9;
+        }
+        .progress-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(212, 168, 75, 0.2);
+            border-radius: 1px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #D4A84B 0%, #FFD700 100%);
+            width: 20%; /* Goal-Gradient: Start at 20% */
+            transition: width 0.3s ease-out;
+        }
+
+        /* Reduced motion: Replace 3D animation with simple fade */
+        @media (prefers-reduced-motion: reduce) {
+            .page-skeleton { transition: opacity 0.3s ease-out; }
+            #gemCanvas { display: none !important; }
+            .loading-status { bottom: 50%; transform: translate(-50%, 50%); }
+        }
+
+        /* When loaded: show and fade in content smoothly */
+        body.loaded .page-skeleton {
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.6s ease-out, visibility 0s linear 0.6s;
+        }
+        body.loaded .book-scene {
+            display: flex !important;
+            opacity: 0;
+            animation: fadeInContent 0.8s ease-out 0.2s forwards;
+        }
+        body.loaded .particles {
+            display: block !important;
+            opacity: 0;
+            animation: fadeInContent 1s ease-out 0.4s forwards;
+        }
+        body.loaded .ambient-glow {
+            display: block !important;
+            opacity: 0;
+            animation: fadeInContent 1s ease-out 0.4s forwards;
+        }
+        body.loaded .nav-arrow {
+            display: flex !important;
+            opacity: 0;
+            animation: fadeInContent 0.6s ease-out 0.5s forwards;
+        }
+        body.loaded .toc-toggle {
+            display: flex !important;
+            opacity: 0;
+            animation: fadeInContent 0.6s ease-out 0.5s forwards;
+        }
         body.loaded .page-indicator {
-            visibility: visible !important;
+            display: flex !important;
+            opacity: 0;
+            animation: fadeInContent 0.6s ease-out 0.5s forwards;
+        }
+        body.loaded .feedback-orb, body.loaded .feedback-btn {
+            display: flex !important;
+            opacity: 0;
+            animation: fadeInContent 0.6s ease-out 0.6s forwards;
+        }
+
+        @keyframes fadeInContent {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 
@@ -69,16 +141,19 @@
         rel="stylesheet">
 
     <!-- Main stylesheet with cache busting -->
-    <link rel="stylesheet" href="styles.css?v=20251228-v17">
+    <link rel="stylesheet" href="styles.css?v=20251228-v24">
 </head>
 
-<body>
-    <!-- Loading Skeleton - Shows immediately while page loads -->
+<body style="visibility: visible;">
+    <!-- Three.js 3D Gem Loader -->
     <div class="page-skeleton" id="pageSkeleton" aria-hidden="true">
-        <div class="skeleton-book">
-            <div class="skeleton-title"></div>
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line" style="width: 30%;"></div>
+        <canvas id="gemCanvas"></canvas>
+        <!-- UI/UX: System Status Visibility + Goal-Gradient Effect -->
+        <div class="loading-status" id="loadingStatus">
+            <div class="loading-text" id="loadingText">Preparing your experience</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
         </div>
     </div>
 
@@ -1111,7 +1186,9 @@
         </div>
     </div>
 
-    <script src="app.js?v=20251228-v7"></script>
+    <!-- Three.js for 3D Gem Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="app.js?v=20251228-v12"></script>
 </body>
 
 </html>
