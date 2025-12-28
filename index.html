@@ -47,83 +47,96 @@
         /* Progress indicator and loading text (UI/UX: System Status Visibility) */
         .loading-status {
             position: absolute;
-            bottom: 20%;
+            bottom: 12%;
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
-            color: rgba(212, 168, 75, 0.8);
-            font-family: 'Cinzel', serif;
             z-index: 10000;
         }
         .loading-text {
-            font-size: 0.9rem;
-            letter-spacing: 0.15em;
-            margin-bottom: 16px;
-            opacity: 0.9;
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            color: #D4A84B;
+            text-shadow: 0 0 15px rgba(212, 168, 75, 0.3);
         }
         .progress-bar {
-            width: 200px;
-            height: 2px;
-            background: rgba(212, 168, 75, 0.2);
-            border-radius: 1px;
+            width: 280px;
+            height: 3px;
+            background: rgba(212, 168, 75, 0.15);
+            border-radius: 2px;
             overflow: hidden;
             margin: 0 auto;
+            position: relative;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+        }
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border: 1px solid rgba(212, 168, 75, 0.2);
+            border-radius: 3px;
         }
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #D4A84B 0%, #FFD700 100%);
+            background: linear-gradient(90deg, #B48C3C 0%, #D4A84B 50%, #FFD700 100%);
             width: 20%; /* Goal-Gradient: Start at 20% */
-            transition: width 0.3s ease-out;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(212, 168, 75, 0.5);
+            border-radius: 2px;
         }
 
         /* Reduced motion: Replace 3D animation with simple fade */
         @media (prefers-reduced-motion: reduce) {
             .page-skeleton { transition: opacity 0.3s ease-out; }
             #gemCanvas { display: none !important; }
-            .loading-status { bottom: 50%; transform: translate(-50%, 50%); }
+            .loading-status { bottom: 45%; transform: translate(-50%, 50%); }
         }
 
-        /* When loaded: show and fade in content smoothly */
+        /* When loaded: crossfade - content fades in WHILE skeleton fades out */
         body.loaded .page-skeleton {
             opacity: 0;
             pointer-events: none;
             visibility: hidden;
-            transition: opacity 0.6s ease-out, visibility 0s linear 0.6s;
+            transition: opacity 0.8s ease-out, visibility 0s linear 0.8s;
         }
         body.loaded .book-scene {
             display: flex !important;
             opacity: 0;
-            animation: fadeInContent 0.8s ease-out 0.2s forwards;
+            animation: fadeInContent 0.6s ease-out forwards; /* No delay, faster */
         }
         body.loaded .particles {
             display: block !important;
             opacity: 0;
-            animation: fadeInContent 1s ease-out 0.4s forwards;
+            animation: fadeInContent 0.8s ease-out 0.2s forwards;
         }
         body.loaded .ambient-glow {
             display: block !important;
             opacity: 0;
-            animation: fadeInContent 1s ease-out 0.4s forwards;
+            animation: fadeInContent 0.8s ease-out 0.2s forwards;
         }
         body.loaded .nav-arrow {
             display: flex !important;
             opacity: 0;
-            animation: fadeInContent 0.6s ease-out 0.5s forwards;
+            animation: fadeInContent 0.5s ease-out 0.3s forwards;
         }
         body.loaded .toc-toggle {
             display: flex !important;
             opacity: 0;
-            animation: fadeInContent 0.6s ease-out 0.5s forwards;
+            animation: fadeInContent 0.5s ease-out 0.3s forwards;
         }
         body.loaded .page-indicator {
             display: flex !important;
             opacity: 0;
-            animation: fadeInContent 0.6s ease-out 0.5s forwards;
+            animation: fadeInContent 0.5s ease-out 0.3s forwards;
         }
         body.loaded .feedback-orb, body.loaded .feedback-btn {
             display: flex !important;
             opacity: 0;
-            animation: fadeInContent 0.6s ease-out 0.6s forwards;
+            animation: fadeInContent 0.5s ease-out 0.4s forwards;
         }
 
         @keyframes fadeInContent {
@@ -141,7 +154,7 @@
         rel="stylesheet">
 
     <!-- Main stylesheet with cache busting -->
-    <link rel="stylesheet" href="styles.css?v=20251228-v24">
+    <link rel="stylesheet" href="styles.css?v=20251228-v25">
 </head>
 
 <body style="visibility: visible;">
@@ -1188,7 +1201,7 @@
 
     <!-- Three.js for 3D Gem Loader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="app.js?v=20251228-v12"></script>
+    <script src="app.js?v=20251228-v15"></script>
 </body>
 
 </html>

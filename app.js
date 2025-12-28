@@ -112,21 +112,34 @@ class GemLoader {
         // Create gem geometry (Icosahedron for 20 faceted faces - premium gem look)
         const geometry = new THREE.IcosahedronGeometry(1.2, 0); // 0 = low poly faceted
 
-        // Premium glossy gold using MeshPhysicalMaterial
-        // Real gold color is warmer/more orange than pure yellow
+        // Premium glossy gold - matched to portfolio's --gold-primary
         const material = new THREE.MeshPhysicalMaterial({
-            color: 0xD4A84B,           // Warm gold (less yellow, more orange)
+            color: 0xd4af37,           // Portfolio gold (--gold-primary)
             metalness: 1.0,            // Fully metallic
-            roughness: 0.15,           // Very smooth for glossy look
+            roughness: 0.12,           // Very smooth for glossy look
             flatShading: true,         // Shows facets clearly
-            clearcoat: 0.3,            // Glossy clearcoat layer
-            clearcoatRoughness: 0.1,   // Smooth clearcoat
+            clearcoat: 0.4,            // Glossy clearcoat layer
+            clearcoatRoughness: 0.08,  // Smooth clearcoat
             reflectivity: 1.0,         // Maximum reflectivity
-            envMapIntensity: 1.5       // Strong environment reflections
+            envMapIntensity: 1.8,      // Strong environment reflections
+            emissive: 0x3d2a05,        // Warm gold emissive for magical glow
+            emissiveIntensity: 0.15    // Base emissive (will pulse in animate)
         });
 
         this.gem = new THREE.Mesh(geometry, material);
+        this.gemMaterial = material;  // Store reference for animate()
         this.scene.add(this.gem);
+
+        // Add wireframe overlay for mystical/arcane effect
+        const wireframe = new THREE.LineSegments(
+            new THREE.EdgesGeometry(geometry),
+            new THREE.LineBasicMaterial({
+                color: 0xd4af37,
+                transparent: true,
+                opacity: 0.35
+            })
+        );
+        this.gem.add(wireframe);
 
         // Lighting optimized for gold reflections
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
@@ -146,6 +159,11 @@ class GemLoader {
         const rimLight = new THREE.DirectionalLight(0xFFF8DC, 0.8);
         rimLight.position.set(0, -5, -5);
         this.scene.add(rimLight);
+
+        // Purple accent light - matches portfolio's --purple-glow
+        const purpleLight = new THREE.PointLight(0x7b68ee, 0.6);
+        purpleLight.position.set(-3, -3, 2);
+        this.scene.add(purpleLight);
 
         // Apply environment map to the gem
         if (this.envMap) {
@@ -177,6 +195,12 @@ class GemLoader {
         // Subtle scale pulse (breathing effect)
         const scale = 1 + Math.sin(Date.now() * 0.002) * 0.05;
         this.gem.scale.set(scale, scale, scale);
+
+        // Emissive pulse for magical artifact glow
+        if (this.gemMaterial) {
+            const emissiveIntensity = 0.15 + Math.sin(Date.now() * 0.003) * 0.1;
+            this.gemMaterial.emissiveIntensity = emissiveIntensity;
+        }
 
         this.renderer.render(this.scene, this.camera);
     }
@@ -260,13 +284,15 @@ class GemLoader {
         const particleCount = 20;
         const particleGeometry = new THREE.TetrahedronGeometry(0.15, 0);
         const particleMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0xD4A84B,            // Match gem gold color
+            color: 0xd4af37,            // Match portfolio gold
             metalness: 1.0,
-            roughness: 0.15,
+            roughness: 0.12,
             flatShading: true,
-            clearcoat: 0.3,
+            clearcoat: 0.4,
             envMap: this.envMap,
-            envMapIntensity: 1.5
+            envMapIntensity: 1.8,
+            emissive: 0x3d2a05,
+            emissiveIntensity: 0.2
         });
 
         for (let i = 0; i < particleCount; i++) {
@@ -432,23 +458,23 @@ class BookPortfolio {
                 requestAnimationFrame(() => {
                     // Trigger gem shatter animation (Three.js)
                     this.gemLoader.shatter(() => {
-                        // Start fade-out transition on loader
+                        // Start fade-out transition on loader (skeleton starts fading)
                         const skeleton = document.getElementById('pageSkeleton');
                         if (skeleton) {
                             skeleton.classList.add('fade-out');
                         }
 
-                        // Wait for shatter to complete, then start content reveal
+                        // Wait for shatter particles to fade, then reveal content
                         setTimeout(() => {
                             // Clean up Three.js resources
                             this.gemLoader.dispose();
 
-                            // Reveal content with smooth fade-in
+                            // Trigger crossfade: content fades in while skeleton continues fading
                             document.body.classList.add('loaded');
 
-                            // Reveal page content after CSS transitions have time to start
-                            setTimeout(() => this.revealPageContent(0), 400);
-                        }, 300); // Small delay for fade-out to begin
+                            // Reveal page content after CSS animations have started
+                            setTimeout(() => this.revealPageContent(0), 300);
+                        }, 200);
                     });
                 });
             });
@@ -732,12 +758,19 @@ class BookPortfolio {
         this.playPageFlipSound();
 
         const currentPageEl = this.pages[this.currentPage];
+
+        // Add flipping class FIRST (high z-index during animation)
+        currentPageEl.classList.add('flipping');
+        // Add flipped to trigger the rotation
         currentPageEl.classList.add('flipped');
         this.createDustParticles(currentPageEl);
 
         const delay = this.animationsEnabled ? 800 : 0;
 
         setTimeout(() => {
+            // Remove flipping class after animation (z-index drops to 1 via .flipped)
+            currentPageEl.classList.remove('flipping');
+
             this.currentPage++;
             this.updateNavigation();
             this.updateTOC();
@@ -754,12 +787,19 @@ class BookPortfolio {
 
         this.currentPage--;
         const prevPageEl = this.pages[this.currentPage];
+
+        // Add unflipping class FIRST (high z-index during animation)
+        prevPageEl.classList.add('unflipping');
+        // Remove flipped to trigger the reverse rotation
         prevPageEl.classList.remove('flipped');
         this.createDustParticles(prevPageEl);
 
         const delay = this.animationsEnabled ? 800 : 0;
 
         setTimeout(() => {
+            // Remove unflipping class after animation
+            prevPageEl.classList.remove('unflipping');
+
             this.updateNavigation();
             this.updateTOC();
             this.revealPageContent(this.currentPage);

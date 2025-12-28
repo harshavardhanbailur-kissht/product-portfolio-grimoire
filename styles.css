@@ -598,16 +598,28 @@ body.loaded .book-scene {
     pointer-events: none;
 }
 
+/* Page flipping state - DURING the animation (high z-index to stay visible) */
+.page.flipping {
+    z-index: 100 !important;
+    pointer-events: none;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Page flip states - smooth 3D rotation animation */
 .page.flipped {
     transform: rotateY(-180deg);
     z-index: 1 !important;
     pointer-events: none;
-    /* Fade out during flip for smooth transition - starts at 50% of flip */
-    opacity: 0;
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.3s ease-in 0.3s,
-                z-index 0s linear 0s;
+    /* Keep page visible during flip - backface-visibility handles hiding the back */
+    opacity: 1;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Page unflipping state - DURING the reverse animation (high z-index) */
+.page.unflipping {
+    z-index: 100 !important;
+    pointer-events: none;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Non-flipped pages - ensure they're interactive and visible */
